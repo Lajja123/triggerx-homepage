@@ -43,17 +43,44 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background:
-    /* Cursor spotlight (wider) */
-    radial-gradient(60% 55% at var(--cursor-x) var(--cursor-y), rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0) 70%),
+    /* Cursor spotlight (wider) */ radial-gradient(
+      60% 55% at var(--cursor-x) var(--cursor-y),
+      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0) 70%
+    ),
     /* Ambient corner glows */
-    radial-gradient(75% 65% at 18% 18%, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0) 62%),
-    radial-gradient(75% 65% at 82% 82%, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0) 62%),
+      radial-gradient(
+        75% 65% at 18% 18%,
+        rgba(255, 255, 255, 0.035),
+        rgba(255, 255, 255, 0) 62%
+      ),
+    radial-gradient(
+      75% 65% at 82% 82%,
+      rgba(255, 255, 255, 0.03),
+      rgba(255, 255, 255, 0) 62%
+    ),
     /* Coarse grid */
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 2px, transparent 2px 42px),
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.045) 0 2px, transparent 2px 42px),
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.045) 0 2px,
+        transparent 2px 42px
+      ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.045) 0 2px,
+      transparent 2px 42px
+    ),
     /* Fine grid */
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 14px),
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 14px);
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.02) 0 1px,
+        transparent 1px 14px
+      ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.02) 0 1px,
+      transparent 1px 14px
+    );
   background-blend-mode: screen, screen, screen, normal, normal, normal, normal;
   opacity: 0.6;
 }
@@ -71,35 +98,170 @@ body::after {
   animation: grainJitter 6s steps(10) infinite;
 }
 
+/* MetaMask Style Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Animation Classes */
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out forwards;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 1s ease-out forwards;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 1s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 1s ease-out forwards;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Delay Classes */
+.delay-100 {
+  animation-delay: 0.1s;
+}
+
+.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.delay-300 {
+  animation-delay: 0.3s;
+}
+
+.delay-400 {
+  animation-delay: 0.4s;
+}
+
+.delay-500 {
+  animation-delay: 0.5s;
+}
+
+.delay-600 {
+  animation-delay: 0.6s;
+}
+
+.delay-700 {
+  animation-delay: 0.7s;
+}
+
+.delay-800 {
+  animation-delay: 0.8s;
+}
+
+.delay-1000 {
+  animation-delay: 1s;
+}
+
+.delay-1200 {
+  animation-delay: 1.2s;
+}
+
+.delay-1500 {
+  animation-delay: 1.5s;
+}
+
+.delay-2000 {
+  animation-delay: 2s;
+}
+
+/* Hero Section Animations */
+@keyframes hero-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-hero-fade-in {
+  animation: hero-fade-in 1.2s ease-out forwards;
+}
+
+.animate-hero-slide-up {
+  animation: hero-slide-up 1s ease-out forwards;
+}
+
 /* Removed background auto-pan; interaction is now cursor-driven */
-
-@keyframes grainJitter {
-  0% { transform: translate(0, 0); }
-  10% { transform: translate(-1%, -1%); }
-  20% { transform: translate(1%, -0.5%); }
-  30% { transform: translate(0.5%, 1%); }
-  40% { transform: translate(-0.5%, 0.5%); }
-  50% { transform: translate(1%, -1%); }
-  60% { transform: translate(-1%, 0.5%); }
-  70% { transform: translate(0.5%, -0.5%); }
-  80% { transform: translate(-0.5%, 1%); }
-  90% { transform: translate(1%, 0.5%); }
-  100% { transform: translate(0, 0); }
-}
-
-/* Animated gradient helpers */
-.gradient-text {
-  background-image: linear-gradient(90deg, var(--brand-a), var(--brand-b), var(--brand-c), var(--brand-d), var(--brand-a));
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: gradientShift 18s ease infinite;
-}
 
 .primary-btn {
   position: relative;
-  background-image: linear-gradient(135deg, var(--brand-b), var(--brand-a), var(--brand-c));
+  background-image: linear-gradient(
+    135deg,
+    var(--brand-b),
+    var(--brand-a),
+    var(--brand-c)
+  );
   background-size: 220% 220%;
   color: #0a0a0a;
   animation: gradientShift 12s ease infinite;
@@ -108,29 +270,35 @@ body::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 70%
+  );
   transform: translateX(-150%) skewX(-20deg);
   transition: transform 800ms ease;
   pointer-events: none;
 }
-.primary-btn:hover::after { transform: translateX(250%) skewX(-20deg); }
+.primary-btn:hover::after {
+  transform: translateX(250%) skewX(-20deg);
+}
 
 .outline-btn {
   border: 1px solid transparent;
-  background-image:
-    linear-gradient(#000, #000),
+  background-image: linear-gradient(#000, #000),
     linear-gradient(135deg, var(--brand-a), var(--brand-c), var(--brand-b));
   background-origin: border-box;
   background-clip: padding-box, border-box;
 }
-.outline-btn:hover { background-image:
-    linear-gradient(#0a0a0a, #0a0a0a),
-    linear-gradient(135deg, var(--brand-b), var(--brand-d), var(--brand-a)); }
+.outline-btn:hover {
+  background-image: linear-gradient(#0a0a0a, #0a0a0a),
+    linear-gradient(135deg, var(--brand-b), var(--brand-d), var(--brand-a));
+}
 
 .badge-gradient {
   border: 1px solid transparent;
-  background-image:
-    linear-gradient(#000, #000),
+  background-image: linear-gradient(#000, #000),
     linear-gradient(90deg, var(--brand-a), var(--brand-b), var(--brand-c));
   background-origin: border-box;
   background-clip: padding-box, border-box;
@@ -142,14 +310,26 @@ body::after {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.14);
   overflow: hidden;
-  transition: transform 300ms ease, background-color 300ms ease, border-color 300ms ease;
+  transition: transform 300ms ease, background-color 300ms ease,
+    border-color 300ms ease;
 }
-.feature-card:hover { transform: translateY(-2px); background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.22); }
+.feature-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.22);
+}
 .feature-card::before {
   content: "";
   position: absolute;
   inset: -1px;
-  background: conic-gradient(from 0deg at 50% 50%, rgba(130,251,208,0.28), rgba(138,180,255,0.28), rgba(251,241,151,0.28), rgba(245,152,232,0.28), rgba(130,251,208,0.28));
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(130, 251, 208, 0.28),
+    rgba(138, 180, 255, 0.28),
+    rgba(251, 241, 151, 0.28),
+    rgba(245, 152, 232, 0.28),
+    rgba(130, 251, 208, 0.28)
+  );
   filter: blur(18px);
   opacity: 0.45;
   z-index: -1;
@@ -157,7 +337,13 @@ body::after {
 }
 
 @keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
