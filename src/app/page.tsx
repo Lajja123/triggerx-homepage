@@ -7,7 +7,7 @@ export default function Home() {
     <div className="min-h-screen relative">
       {/* Hero Section - MetaMask Style */}
       <Section1 />
-      {/* <Section2 /> */}
+      <Section2 />
     </div>
   );
 }

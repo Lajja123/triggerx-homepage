@@ -96,9 +96,8 @@ export default function AnimatedButton({
       };
     };
 
-    // Mouse enter event
-    buttonElement.addEventListener("mouseenter", (e) => {
-      const { x, y } = getXY(e);
+    buttonElement.addEventListener("mouseenter", (e: Event) => {
+      const { x, y } = getXY(e as MouseEvent);
 
       xSet(x);
       ySet(y);
@@ -109,7 +108,6 @@ export default function AnimatedButton({
         ease: "power2.out",
       });
 
-      // Animate text color to black
       gsap.to(buttonElement, {
         color: "#000000",
         duration: 0.15,
@@ -118,8 +116,8 @@ export default function AnimatedButton({
     });
 
     // Mouse leave event
-    buttonElement.addEventListener("mouseleave", (e) => {
-      const { x, y } = getXY(e);
+    buttonElement.addEventListener("mouseleave", (e: Event) => {
+      const { x, y } = getXY(e as MouseEvent);
 
       gsap.killTweensOf(flairElement);
 
@@ -131,7 +129,6 @@ export default function AnimatedButton({
         ease: "power2.out",
       });
 
-      // Reset text color to white
       gsap.to(buttonElement, {
         color: "#ffffff",
         duration: 0.15,
@@ -139,9 +136,21 @@ export default function AnimatedButton({
       });
     });
 
+    // Mouse move event
+    buttonElement.addEventListener("mousemove", (e: Event) => {
+      const { x, y } = getXY(e as MouseEvent);
+
+      gsap.to(flairElement, {
+        xPercent: x,
+        yPercent: y,
+        duration: 0.4,
+        ease: "power2",
+      });
+    });
+
     // Mouse move event for smooth tracking
-    buttonElement.addEventListener("mousemove", (e) => {
-      const { x, y } = getXY(e);
+    buttonElement.addEventListener("mousemove", (e: Event) => {
+      const { x, y } = getXY(e as MouseEvent);
 
       gsap.to(flairElement, {
         xPercent: x,

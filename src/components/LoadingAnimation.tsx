@@ -52,7 +52,7 @@ const LoadingAnimation = () => {
           // Notify all waiting callbacks
           loadingCallbacks.forEach((callback) => callback());
           loadingCallbacks.length = 0; // Clear the array
-        }, 2000);
+        }, 100); // Reduced delay from 2000ms to 1000ms
       },
     });
 
