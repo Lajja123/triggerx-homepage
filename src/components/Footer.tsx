@@ -173,33 +173,6 @@ function Footer() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Animated background gradient
-      const animatedBg = footerRef.current?.querySelector(".animated-bg");
-      if (animatedBg) {
-        gsap.to(animatedBg, {
-          background:
-            "linear-gradient(45deg, #0a0a0a, #141414, #1a1a1a, #0a0a0a)",
-          duration: 10,
-          repeat: -1,
-          ease: "none",
-        });
-      }
-
-      // Floating background elements
-      const floatingElements =
-        footerRef.current?.querySelectorAll(".floating-element");
-      floatingElements?.forEach((el, index) => {
-        gsap.to(el, {
-          y: -20 + index * 15,
-          x: 15 - index * 8,
-          rotation: 3 - index * 1.5,
-          duration: 4 + index,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-        });
-      });
-
       // Social links animation
       const socialLinks =
         socialLinksRef.current?.querySelectorAll(".social-link");
@@ -300,20 +273,6 @@ function Footer() {
         );
       });
 
-      // Particle system
-      const particles = footerRef.current?.querySelectorAll(".particle");
-      particles?.forEach((particle, index) => {
-        gsap.to(particle, {
-          y: -100,
-          x: Math.random() * 200 - 100,
-          opacity: 0,
-          duration: 3 + Math.random() * 2,
-          repeat: -1,
-          delay: index * 0.2,
-          ease: "power1.out",
-        });
-      });
-
       // Mouse follower animation
       const mouseFollower = footerRef.current?.querySelector(".mouse-follower");
       if (mouseFollower) {
@@ -370,7 +329,7 @@ function Footer() {
       onMouseMove={handleMouseMove}
     >
       {/* Animated background */}
-      <div className="animated-bg absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#141414] to-[#1a1a1a]"></div>
+      <div className="animated-bg absolute inset-0 "></div>
 
       {/* Floating background elements */}
       <div className="floating-element absolute top-20 left-10 w-24 h-24 bg-gradient-to-br from-[#82FBD0]/10 to-transparent rounded-full opacity-30"></div>
@@ -378,22 +337,7 @@ function Footer() {
       <div className="floating-element absolute bottom-20 left-20 w-32 h-32 bg-gradient-to-br from-[#F8FF7C]/10 to-transparent rounded-full opacity-30"></div>
       <div className="floating-element absolute bottom-40 right-10 w-28 h-28 bg-gradient-to-br from-[#82FBD0]/10 to-transparent rounded-full opacity-50"></div>
 
-      {/* Particle system */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(12)].map((_, i) => (
-          <div
-            key={i}
-            className="particle absolute w-1 h-1 bg-[#82FBD0]/60 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-          />
-        ))}
-      </div>
-
       {/* Mouse follower */}
-      <div className="mouse-follower fixed w-8 h-8 bg-gradient-to-r from-[#82FBD0]/20 to-[#5047FF]/20 rounded-full pointer-events-none z-50 blur-sm"></div>
 
       {/* Main Content Area */}
       <div className="z-40 flex mt-10 md:mt-20 flex-col-reverse sm:flex-row items-start sm:items-end justify-between gap-10 w-[88%] sm:w-[95%] md:w-[85%] xl:w-[70%] mx-auto">
@@ -414,7 +358,7 @@ function Footer() {
                   href={link.href}
                   className={`flex items-center justify-center w-7 h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 overflow-hidden rounded-full transition-all duration-300 ${
                     link.applyBorderEffect
-                      ? "border border-white/30 hover:border-[#82FBD0] hover:bg-[#82FBD0]/10"
+                      ? "border border-white/30  hover:bg-[#FFFFFF]"
                       : ""
                   }`}
                   target="_blank"
@@ -565,7 +509,7 @@ function Footer() {
           ))}
         </div>
 
-        <p className="text-[10px] xs:text-[12px] lg:text-[14px] 2xl:text-[15px] mt-4 mx-auto flex items-center justify-center text-gray-400 hover:text-[#82FBD0] transition-colors duration-300">
+        {/* <p className="text-[10px] xs:text-[12px] lg:text-[14px] 2xl:text-[15px] mt-4 mx-auto flex items-center justify-center text-gray-400 hover:text-[#82FBD0] transition-colors duration-300">
           Build with ❤️ by{" "}
           <a
             href="https://lampros.tech/?utm_source=triggerx&utm_medium=footer"
@@ -574,7 +518,7 @@ function Footer() {
           >
             Lampros Tech
           </a>
-        </p>
+        </p> */}
       </div>
     </footer>
   );

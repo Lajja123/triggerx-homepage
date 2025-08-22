@@ -15,18 +15,6 @@ const letters = [
   "/letters/x.png",
 ];
 
-// Global state for loading completion
-let loadingComplete = false;
-const loadingCallbacks: (() => void)[] = [];
-
-export const onLoadingComplete = (callback: () => void) => {
-  if (loadingComplete) {
-    callback();
-  } else {
-    loadingCallbacks.push(callback);
-  }
-};
-
 const LoadingAnimation = () => {
   const [isComplete, setIsComplete] = useState(false);
   const [isZoomedOut, setIsZoomedOut] = useState(false);
@@ -49,7 +37,7 @@ const LoadingAnimation = () => {
       onComplete: () => {
         // Set up scroll listener for zoom out
         setupScrollListener();
-        
+
         // Also check if page is scrollable and add fallback
         setTimeout(() => {
           checkScrollability();
@@ -136,21 +124,22 @@ const LoadingAnimation = () => {
 
   const checkScrollability = () => {
     // Check if the page is scrollable
-    const isScrollable = document.documentElement.scrollHeight > window.innerHeight;
+    const isScrollable =
+      document.documentElement.scrollHeight > window.innerHeight;
     console.log("Page scrollable:", isScrollable);
-    
+
     if (!isScrollable) {
       // If page is not scrollable, add a temporary scrollable element
-      const tempDiv = document.createElement('div');
-      tempDiv.style.height = '200vh';
-      tempDiv.style.position = 'absolute';
-      tempDiv.style.top = '0';
-      tempDiv.style.left = '0';
-      tempDiv.style.width = '100%';
-      tempDiv.style.pointerEvents = 'none';
-      tempDiv.style.zIndex = '-1';
+      const tempDiv = document.createElement("div");
+      tempDiv.style.height = "200vh";
+      tempDiv.style.position = "absolute";
+      tempDiv.style.top = "0";
+      tempDiv.style.left = "0";
+      tempDiv.style.width = "100%";
+      tempDiv.style.pointerEvents = "none";
+      tempDiv.style.zIndex = "-1";
       document.body.appendChild(tempDiv);
-      
+
       // Remove it after animation
       setTimeout(() => {
         if (tempDiv.parentNode) {
@@ -176,20 +165,42 @@ const LoadingAnimation = () => {
 
     const cleanupListeners = () => {
       window.removeEventListener("scroll", () => triggerIfNotAlready("scroll"));
-      window.removeEventListener("mousemove", () => triggerIfNotAlready("mousemove"));
+      window.removeEventListener("mousemove", () =>
+        triggerIfNotAlready("mousemove")
+      );
       window.removeEventListener("click", () => triggerIfNotAlready("click"));
-      window.removeEventListener("keydown", () => triggerIfNotAlready("keydown"));
-      window.removeEventListener("touchstart", () => triggerIfNotAlready("touchstart"));
+      window.removeEventListener("keydown", () =>
+        triggerIfNotAlready("keydown")
+      );
+      window.removeEventListener("touchstart", () =>
+        triggerIfNotAlready("touchstart")
+      );
       window.removeEventListener("wheel", () => triggerIfNotAlready("wheel"));
     };
 
     // Multiple trigger methods for better reliability
-    window.addEventListener("scroll", () => triggerIfNotAlready("scroll"), { passive: true });
-    window.addEventListener("mousemove", () => triggerIfNotAlready("mousemove"), { passive: true });
-    window.addEventListener("click", () => triggerIfNotAlready("click"), { passive: true });
-    window.addEventListener("keydown", () => triggerIfNotAlready("keydown"), { passive: true });
-    window.addEventListener("touchstart", () => triggerIfNotAlready("touchstart"), { passive: true });
-    window.addEventListener("wheel", () => triggerIfNotAlready("wheel"), { passive: true });
+    window.addEventListener("scroll", () => triggerIfNotAlready("scroll"), {
+      passive: true,
+    });
+    window.addEventListener(
+      "mousemove",
+      () => triggerIfNotAlready("mousemove"),
+      { passive: true }
+    );
+    window.addEventListener("click", () => triggerIfNotAlready("click"), {
+      passive: true,
+    });
+    window.addEventListener("keydown", () => triggerIfNotAlready("keydown"), {
+      passive: true,
+    });
+    window.addEventListener(
+      "touchstart",
+      () => triggerIfNotAlready("touchstart"),
+      { passive: true }
+    );
+    window.addEventListener("wheel", () => triggerIfNotAlready("wheel"), {
+      passive: true,
+    });
 
     // Auto-trigger after 3 seconds if no interaction
     setTimeout(() => {
@@ -309,29 +320,6 @@ const LoadingAnimation = () => {
       // Add particle trail effect for X
       createParticleTrail(xLetter, moveX, moveY, maxScale);
     }
-
-    // Enhanced background effect during zoom
-    gsap.to(containerRef.current, {
-      backgroundColor: "rgba(0, 0, 0, 0.8)",
-      duration: 1.5,
-      ease: "power2.inOut",
-    });
-
-    // After X completes its animation, fade out container
-    gsap.to(containerRef.current, {
-      opacity: 0,
-      scale: 1.1,
-      duration: 1,
-      ease: "power2.inOut",
-      delay: 6, // Wait for X's animation to complete
-      onComplete: () => {
-        setIsComplete(true);
-        loadingComplete = true;
-        // Notify all waiting callbacks
-        loadingCallbacks.forEach((callback) => callback());
-        loadingCallbacks.length = 0;
-      },
-    });
   };
 
   const createParticles = () => {

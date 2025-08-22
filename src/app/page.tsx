@@ -3,7 +3,6 @@ import LoadingAnimation from "@/components/LoadingAnimation";
 import Section1 from "@/components/Section1";
 import Section2 from "@/components/Section2";
 import { useState, useEffect } from "react";
-import { onLoadingComplete } from "@/components/LoadingAnimation";
 import Header from "@/components/Header";
 import Section3 from "@/components/Section3";
 import Section4 from "@/components/Section4";
@@ -11,21 +10,16 @@ import Section5 from "@/components/Section5";
 import Footer from "@/components/Footer";
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [showContent, setShowContent] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
     // Handle loading completion
-    onLoadingComplete(() => {
-      // Add a small delay for smooth transition
-      setTimeout(() => {
-        setIsLoading(false);
-        // Show content after loading animation completes
-        setTimeout(() => {
-          setShowContent(true);
-        }, 500);
-      }, 1000);
-    });
+    setTimeout(() => {
+      setIsLoading(false);
+      // Show content immediately after loading animation completes
+      setShowContent(true);
+    }, 6000); // Reduced from 1000ms to 200ms
   }, []);
 
   return (
@@ -45,18 +39,12 @@ export default function Home() {
       >
         <Header />
         <Section1 />
-        {/* <Section1 />
         <Section2 />
-        <Section3 />
+        {/* <Section3 />
         <Section4 />
         <Section5 /> */}
-        {/* <Footer /> */}
+        <Footer />
       </div>
-
-      {/* Optional: Add a fade overlay during transition */}
-      {!isLoading && !showContent && (
-        <div className="fixed inset-0 bg-black z-40 transition-opacity duration-500 ease-in-out" />
-      )}
     </div>
   );
 }
