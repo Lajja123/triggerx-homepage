@@ -44,7 +44,7 @@ export default function AnimatedButton({
     // Create the circular background element
     const flairCircle = document.createElement("div");
     flairCircle.style.aspectRatio = "1/1";
-    flairCircle.style.backgroundColor = "#FFFFFF";
+    flairCircle.style.backgroundColor = "#fff282";
     flairCircle.style.borderRadius = "50%";
     flairCircle.style.content = "";
     flairCircle.style.display = "block";
@@ -68,6 +68,15 @@ export default function AnimatedButton({
       buttonText.style.position = "relative";
       buttonText.style.zIndex = "2";
       buttonText.style.transition =
+        "color 0.15s cubic-bezier(0.76, 0, 0.24, 1)";
+    }
+
+    // Also target the Button component specifically
+    const buttonComponent = buttonElement.querySelector(
+      "[class*='text-']"
+    ) as HTMLElement;
+    if (buttonComponent) {
+      buttonComponent.style.transition =
         "color 0.15s cubic-bezier(0.76, 0, 0.24, 1)";
     }
 
@@ -113,6 +122,15 @@ export default function AnimatedButton({
         duration: 0.15,
         ease: "power2.out",
       });
+
+      // Also animate the Button component text color
+      if (buttonComponent) {
+        gsap.to(buttonComponent, {
+          color: "#000000",
+          duration: 0.15,
+          ease: "power2.out",
+        });
+      }
     });
 
     // Mouse leave event
@@ -134,6 +152,15 @@ export default function AnimatedButton({
         duration: 0.15,
         ease: "power2.out",
       });
+
+      // Also reset the Button component text color
+      if (buttonComponent) {
+        gsap.to(buttonComponent, {
+          color: "#ffffff",
+          duration: 0.15,
+          ease: "power2.out",
+        });
+      }
     });
 
     // Mouse move event
@@ -174,13 +201,13 @@ export default function AnimatedButton({
   const getVariantStyles = () => {
     switch (variant) {
       case "primary":
-        return "bg-yellow-300 text-black border-yellow-300";
+        return "bg-[#fff282] text-black border-[#fff282]";
       case "secondary":
         return "bg-gray-800 text-white border-gray-800";
       case "outline":
-        return "bg-transparent text-white border-white";
+        return "bg-transparent text-white border-[#fff282]";
       default:
-        return "bg-yellow-300 text-black border-yellow-300";
+        return "bg-[#fff282] text-black border-[#fff282]";
     }
   };
 
@@ -188,18 +215,18 @@ export default function AnimatedButton({
   const getSizeStyles = () => {
     switch (size) {
       case "sm":
-        return "px-4 py-2 text-sm";
+        return "px-5 py-2.5 text-base";
       case "md":
-        return "px-6 py-3 text-base";
-      case "lg":
         return "px-8 py-4 text-lg";
+      case "lg":
+        return "px-10 py-5 text-xl";
       default:
-        return "px-6 py-3 text-base";
+        return "px-8 py-4 text-lg";
     }
   };
 
   const baseStyles =
-    "inline-flex items-center justify-center gap-1 font-semibold rounded-full border border-[#F8FF7C] bg-[#F8FF7C] text-black transition-all duration-300 ease-out";
+    "inline-flex items-center justify-center gap-1 rounded-full border border-[#fff282] bg-transparent text-white transition-all duration-300 ease-out";
   const combinedStyles = `bg-transparent ${baseStyles} ${getVariantStyles()} ${getSizeStyles()} ${className}`;
 
   if (href) {

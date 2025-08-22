@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import AnimatedButton from "@/components/AnimatedButton";
+import AnimatedButton from "@/components/ui/AnimatedButton";
+import { Typography, Button } from "@/components/ui/Typography";
 
 // Register ScrollTrigger plugin
 if (typeof window !== "undefined") {
@@ -13,11 +14,21 @@ if (typeof window !== "undefined") {
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isHovering, setIsHovering] = useState(false);
   const [activeLink, setActiveLink] = useState<string | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navLinksRef = useRef<HTMLDivElement>(null);
+  const mobileNavRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
+
+  const navLinks = [
+    { href: "#", text: "Dev Hub" },
+    { href: "#", text: "Leaderboard" },
+    { href: "#", text: "Blog" },
+    { href: "#", text: "Join as Keeper" },
+    { href: "#", text: "Contact Us" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,83 +39,102 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close mobile menu when clicking outside
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Header background animation on scroll
-      if (headerRef.current) {
-        gsap.to(headerRef.current, {
-          backgroundColor: isScrolled
-            ? "rgba(20, 20, 20, 0.95)"
-            : "rgba(20, 20, 20, 0.8)",
-          backdropFilter: isScrolled ? "blur(20px)" : "blur(10px)",
-          borderBottomColor: isScrolled
-            ? "rgba(80, 71, 255, 0.3)"
-            : "rgba(255, 255, 255, 0.1)",
-          duration: 0.3,
-          ease: "power2.out",
-        });
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isMobileMenuOpen &&
+        mobileNavRef.current &&
+        !mobileNavRef.current.contains(event.target as Node) &&
+        !mobileMenuButtonRef.current?.contains(event.target as Node)
+      ) {
+        setIsMobileMenuOpen(false);
       }
+    };
 
-      // Enhanced logo animations
-      const logoLetters = logoRef.current?.querySelectorAll("img");
-      if (logoLetters) {
-        // Initial stagger animation for logo letters
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isMobileMenuOpen]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isMobileMenuOpen]);
+
+  // Mobile menu animations
+  useEffect(() => {
+    if (mobileNavRef.current) {
+      if (isMobileMenuOpen) {
+        gsap.set(mobileNavRef.current, { display: "block" });
         gsap.fromTo(
-          logoLetters,
+          mobileNavRef.current,
           {
-            y: -30,
             opacity: 0,
-            rotation: -15,
-            scale: 0.8,
+            y: -20,
           },
           {
-            y: 0,
             opacity: 1,
-            rotation: 0,
-            scale: 1,
-            duration: 0.8,
-            stagger: 0.1,
-            ease: "back.out(1.7)",
-            delay: 0.2,
+            y: 0,
+            duration: 0.3,
+            ease: "power2.out",
           }
         );
 
+        // Animate mobile nav links
+        const mobileLinks = mobileNavRef.current.querySelectorAll("a");
+        gsap.fromTo(
+          mobileLinks,
+          {
+            opacity: 0,
+            x: -20,
+          },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.3,
+            stagger: 0.1,
+            ease: "power2.out",
+            delay: 0.1,
+          }
+        );
+      } else {
+        gsap.to(mobileNavRef.current, {
+          opacity: 0,
+          y: -20,
+          duration: 0.2,
+          ease: "power2.in",
+          onComplete: () => {
+            if (mobileNavRef.current) {
+              gsap.set(mobileNavRef.current, { display: "none" });
+            }
+          },
+        });
+      }
+    }
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Enhanced logo animations
+      const logoLetters = logoRef.current?.querySelectorAll("img");
+      if (logoLetters) {
         // Enhanced hover animations for individual letters
-        logoLetters.forEach((letter, index) => {
+        logoLetters.forEach((letter) => {
           letter.addEventListener("mouseenter", () => {
             gsap.to(letter, {
-              y: -12,
-              rotation: 20,
+              y: -10,
+              rotation: 10,
               scale: 1.3,
               duration: 0.4,
-              ease: "back.out(1.7)",
-            });
-
-            // Animate adjacent letters with ripple effect
-            if (index > 0) {
-              gsap.to(logoLetters[index - 1], {
-                y: -6,
-                rotation: 10,
-                scale: 1.15,
-                duration: 0.3,
-                ease: "back.out(1.7)",
-              });
-            }
-            if (index < logoLetters.length - 1) {
-              gsap.to(logoLetters[index + 1], {
-                y: -6,
-                rotation: 10,
-                scale: 1.15,
-                duration: 0.3,
-                ease: "back.out(1.7)",
-              });
-            }
-
-            // Add glow effect
-            gsap.to(letter, {
-              filter:
-                "brightness(1.5) drop-shadow(0 0 10px rgba(80, 71, 255, 0.8))",
-              duration: 0.3,
+              ease: "back.out(1.3)",
             });
           });
 
@@ -116,69 +146,35 @@ export default function Header() {
               duration: 0.5,
               ease: "power2.out",
             });
-
-            gsap.to(letter, {
-              filter: "brightness(1) drop-shadow(0 0 0px rgba(80, 71, 255, 0))",
-              duration: 0.3,
-            });
           });
         });
-
-        // Logo container hover effect
-        const logoContainer = logoRef.current?.parentElement;
-        if (logoContainer) {
-          logoContainer.addEventListener("mouseenter", () => {
-            gsap.to(logoLetters, {
-              scale: 1.08,
-              duration: 0.3,
-              ease: "power2.out",
-            });
-          });
-
-          logoContainer.addEventListener("mouseleave", () => {
-            gsap.to(logoLetters, {
-              scale: 1,
-              duration: 0.3,
-              ease: "power2.out",
-            });
-          });
-        }
       }
 
       // Enhanced navigation link animations
       const navLinks = navLinksRef.current?.querySelectorAll("a");
       if (navLinks) {
         navLinks.forEach((link, index) => {
-          // Initial entrance animation
-          gsap.fromTo(
-            link,
-            { opacity: 0, y: -20, scale: 0.9 },
-            {
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              duration: 0.6,
-              delay: 0.5 + index * 0.1,
-              ease: "back.out(1.7)",
-            }
-          );
-
           // Enhanced hover animations
           link.addEventListener("mouseenter", () => {
             setActiveLink(link.textContent);
 
             gsap.to(link, {
               scale: 1.1,
-              color: "#5047FF",
               duration: 0.3,
               ease: "power2.out",
             });
 
-            // Add glow effect
-            gsap.to(link, {
-              textShadow: "0 0 20px rgba(80, 71, 255, 0.8)",
-              duration: 0.3,
-            });
+            // Add glow effect to the typography component
+            const typographyElement = link.querySelector(
+              "[class*='text-white']"
+            );
+            if (typographyElement) {
+              gsap.to(typographyElement, {
+                color: "#FFF282",
+                textShadow: "0 0 20px rgba(255, 242, 130, 0.8)",
+                duration: 0.3,
+              });
+            }
 
             // Animate underline
             const underline = link.querySelector(".nav-underline");
@@ -196,15 +192,21 @@ export default function Header() {
 
             gsap.to(link, {
               scale: 1,
-              color: "#ffffff",
               duration: 0.3,
               ease: "power2.out",
             });
 
-            gsap.to(link, {
-              textShadow: "0 0 0px rgba(80, 71, 255, 0)",
-              duration: 0.3,
-            });
+            // Reset typography component
+            const typographyElement = link.querySelector(
+              "[class*='text-white']"
+            );
+            if (typographyElement) {
+              gsap.to(typographyElement, {
+                color: "#FFFFFF",
+                textShadow: "0 0 0px rgba(255, 242, 130, 0)",
+                duration: 0.3,
+              });
+            }
 
             // Reset underline
             const underline = link.querySelector(".nav-underline");
@@ -218,216 +220,159 @@ export default function Header() {
           });
         });
       }
-
-      // CTA button animations
-      const ctaButton = headerRef.current?.querySelector(".cta-button");
-      if (ctaButton) {
-        gsap.fromTo(
-          ctaButton,
-          { opacity: 0, scale: 0.8, x: 50 },
-          {
-            opacity: 1,
-            scale: 1,
-            x: 0,
-            duration: 0.8,
-            delay: 1,
-            ease: "back.out(1.7)",
-          }
-        );
-      }
-
-      // Floating particles in header
-      const particles = headerRef.current?.querySelectorAll(".header-particle");
-      particles?.forEach((particle, index) => {
-        gsap.to(particle, {
-          y: -20,
-          x: Math.random() * 100 - 50,
-          opacity: 0,
-          duration: 3 + Math.random() * 2,
-          repeat: -1,
-          delay: index * 0.5,
-          ease: "power1.out",
-        });
-      });
     }, headerRef);
 
     return () => ctx.revert();
   }, [isScrolled]);
 
-  const handleHeaderMouseEnter = () => {
-    setIsHovering(true);
-
-    // Animate particles on hover
-    const particles = headerRef.current?.querySelectorAll(".header-particle");
-    particles?.forEach((particle) => {
-      gsap.to(particle, {
-        scale: 1.5,
-        duration: 0.3,
-        ease: "power2.out",
-      });
-    });
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const handleHeaderMouseLeave = () => {
-    setIsHovering(false);
-
-    // Reset particles
-    const particles = headerRef.current?.querySelectorAll(".header-particle");
-    particles?.forEach((particle) => {
-      gsap.to(particle, {
-        scale: 1,
-        duration: 0.3,
-        ease: "power2.out",
-      });
-    });
+  const handleMobileLinkClick = () => {
+    setIsMobileMenuOpen(false);
   };
 
   return (
     <header
       ref={headerRef}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "shadow-2xl shadow-[#5047FF]/20" : ""
+        isScrolled ? "shadow-2xl shadow-[#C07AF6]/20" : ""
       }`}
-      onMouseEnter={handleHeaderMouseEnter}
-      onMouseLeave={handleHeaderMouseLeave}
     >
-      {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#141414]/95 to-[#1a1a1a]/95 backdrop-blur-md border-b border-white/10"></div>
-
-      {/* Floating particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="header-particle absolute w-1 h-1 bg-[#5047FF]/30 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-          />
-        ))}
-      </div>
-
-      <div className="relative z-10 w-full mx-auto px-6 py-4 flex items-center justify-between">
-        <div className="flex gap-16 items-center">
+      <div className="relative z-10 w-full mx-auto px-4 sm:px-6 py-4 flex items-center justify-between border-b border-white/10">
+        <div className="flex gap-8 lg:gap-16 items-center">
           {/* Enhanced Logo */}
           <Link href="/" className="flex items-center space-x-1 group">
-            <div ref={logoRef} className="flex items-center space-x-1 relative">
-              <Image
-                src="/letters/t.png"
-                alt="T"
-                width={28}
-                height={28}
-                className="cursor-pointer transition-all duration-300"
-              />
-              <Image
-                src="/letters/r.png"
-                alt="R"
-                width={28}
-                height={28}
-                className="cursor-pointer transition-all duration-300"
-              />
-              <Image
-                src="/letters/i.png"
-                alt="I"
-                width={28}
-                height={28}
-                className="cursor-pointer transition-all duration-300"
-              />
-              <Image
-                src="/letters/g.png"
-                alt="G"
-                width={28}
-                height={28}
-                className="cursor-pointer transition-all duration-300"
-              />
-              <Image
-                src="/letters/g.png"
-                alt="G"
-                width={28}
-                height={28}
-                className="cursor-pointer transition-all duration-300"
-              />
-              <Image
-                src="/letters/e.png"
-                alt="E"
-                width={28}
-                height={28}
-                className="cursor-pointer transition-all duration-300"
-              />
-              <Image
-                src="/letters/r.png"
-                alt="R"
-                width={28}
-                height={28}
-                className="cursor-pointer transition-all duration-300"
-              />
-              <Image
-                src="/letters/x.png"
-                alt="X"
-                width={28}
-                height={28}
-                className="cursor-pointer transition-all duration-300"
-              />
-
-              {/* Logo glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[#5047FF]/20 to-[#F8FF7C]/20 blur-xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div
+              ref={logoRef}
+              className="flex items-center space-x-0.5 sm:space-x-1 relative"
+            >
+              {["t", "r", "i", "g", "g", "e", "r", "x"].map((letter, index) => (
+                <Image
+                  key={index}
+                  src={`/letters/${letter}.png`}
+                  alt={letter.toUpperCase()}
+                  width={20}
+                  height={20}
+                  className="cursor-pointer transition-all duration-300 hover:scale-110 sm:w-7 sm:h-7"
+                />
+              ))}
             </div>
           </Link>
 
-          {/* Enhanced Navigation */}
-          <nav
-            ref={navLinksRef}
-            className="hidden lg:flex items-center gap-8 text-lg text-white"
-          >
-            {[
-              { href: "#", text: "Dev Hub", icon: "⚡" },
-              { href: "#", text: "Leaderboard", icon: "🏆" },
-              { href: "#", text: "Blog", icon: "📝" },
-              { href: "#", text: "Join as Keeper", icon: "🛡️" },
-              { href: "#", text: "Contact Us", icon: "📞" },
-            ].map((link, index) => (
+          {/* Desktop Navigation */}
+          <nav ref={navLinksRef} className="hidden lg:flex items-center gap-3">
+            {navLinks.map((link, index) => (
               <Link
                 key={index}
                 href={link.href}
-                className="relative group flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 ease-out hover:bg-white/5"
+                className="hover:text-white relative group flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 ease-out hover:bg-white/5"
               >
-                <span className="text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  {link.icon}
-                </span>
-                <span className="relative">
+                <Typography variant="body" className="relative text-white">
                   {link.text}
-                  <div className="nav-underline absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-[#5047FF] to-[#F8FF7C] w-0 transition-all duration-300"></div>
-                </span>
+                  <div className="hover:text-white nav-underline absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-[#C07AF6] to-[#FFF282] w-0 transition-all duration-300"></div>
+                </Typography>
               </Link>
             ))}
           </nav>
         </div>
 
-        {/* Enhanced CTA Button */}
-        <div className="cta-button relative group">
-          <AnimatedButton
-            href="#"
-            variant="outline"
-            size="md"
-            className="relative z-10 hover:scale-105 transition-transform duration-300"
-          >
-            Start Building
-          </AnimatedButton>
-          <div className="absolute inset-0 bg-gradient-to-r from-[#5047FF]/20 to-[#F8FF7C]/20 blur-xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        </div>
+        <div className="flex items-center gap-4">
+          {/* Desktop CTA Button */}
+          <div className="hidden lg:block cta-button relative group">
+            <AnimatedButton
+              href="#"
+              size="sm"
+              variant="outline"
+              className="relative z-10 hover:scale-105 transition-transform duration-300"
+            >
+              <Button color="white">Start Building</Button>
+            </AnimatedButton>
+          </div>
 
-        {/* Mobile menu button */}
-        <button className="lg:hidden flex flex-col gap-1 p-2 rounded-lg hover:bg-white/5 transition-all duration-300 group">
-          <div className="w-6 h-0.5 bg-white transition-all duration-300 group-hover:bg-[#5047FF]"></div>
-          <div className="w-6 h-0.5 bg-white transition-all duration-300 group-hover:bg-[#5047FF]"></div>
-          <div className="w-6 h-0.5 bg-white transition-all duration-300 group-hover:bg-[#5047FF]"></div>
-        </button>
+          {/* Mobile menu button */}
+          <button
+            ref={mobileMenuButtonRef}
+            onClick={toggleMobileMenu}
+            className="lg:hidden flex flex-col justify-center items-center w-10 h-10 rounded-lg hover:bg-white/5 transition-all duration-300 group relative z-50"
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+          >
+            <div className="relative w-6 h-4 flex flex-col justify-center">
+              <div
+                className={`absolute w-6 h-0.5 bg-[#C07AF6] transition-all duration-300  ${
+                  isMobileMenuOpen ? "rotate-45 top-1.5" : "top-0"
+                }`}
+              ></div>
+              <div
+                className={`absolute w-6 h-0.5 bg-[#C07AF6] transition-all duration-300  top-1.5 ${
+                  isMobileMenuOpen
+                    ? "opacity-0 scale-0"
+                    : "opacity-100 scale-100"
+                }`}
+              ></div>
+              <div
+                className={`absolute w-6 h-0.5 bg-[#C07AF6] transition-all duration-300  ${
+                  isMobileMenuOpen ? "-rotate-45 top-1.5" : "top-3"
+                }`}
+              ></div>
+            </div>
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Navigation Menu */}
+      <div
+        ref={mobileNavRef}
+        className="lg:hidden fixed left-0 right-0 bg-black/95 backdrop-blur-xl border-b border-white/10 z-40"
+        style={{
+          display: "none",
+          top: `${headerRef.current?.offsetHeight || 80}px`,
+        }}
+      >
+        <nav className="px-4 sm:px-6 py-6 space-y-4">
+          {navLinks.map((link, index) => (
+            <Link
+              key={index}
+              href={link.href}
+              onClick={handleMobileLinkClick}
+              className="block px-4 py-3 rounded-lg hover:bg-white/5 transition-all duration-300 group"
+            >
+              <Typography
+                variant="body"
+                className="text-white group-hover:text-[#FFF282] transition-colors duration-300"
+              >
+                {link.text}
+              </Typography>
+            </Link>
+          ))}
+
+          {/* Mobile CTA Button */}
+          <div className="pt-4 border-t border-white/10">
+            <AnimatedButton
+              href="#"
+              size="sm"
+              variant="outline"
+              className="w-50 justify-center hover:scale-105 transition-transform duration-300"
+              onClick={handleMobileLinkClick}
+            >
+              <Button color="white">Start Building</Button>
+            </AnimatedButton>
+          </div>
+        </nav>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-30"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
 
       {/* Scroll progress indicator */}
       <div
-        className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-[#5047FF] to-[#F8FF7C] transform scale-x-0 origin-left transition-transform duration-300"
+        className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-[#C07AF6] to-[#FFF282] transform scale-x-0 origin-left transition-transform duration-300"
         style={{ transform: `scaleX(${isScrolled ? 1 : 0})` }}
       ></div>
     </header>

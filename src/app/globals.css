@@ -1,20 +1,45 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Sharp Grotesk";
+  src: url("/fonts/sharp-grotesk-300.otf") format("opentype");
+  font-weight: 300;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Actay";
+  src: url("/fonts/Actay-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Actay Wide";
+  src: url("/fonts/ActayWide-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-display: swap;
+  font-style: normal;
+}
+
+@theme {
+  --font-family-actay-regular: "Actay", system-ui, sans-serif;
+  --font-family-actay-wide-bold: "Actay Wide", system-ui, sans-serif;
+  --font-family-sharp-grotesk: "Sharp Grotesk", system-ui, sans-serif;
+}
+
 :root {
   --background: #000000;
   --foreground: #ededed;
   --cursor-x: 50%;
   --cursor-y: 50%;
   /* Brand accents */
-  --brand-a: #82fbd0;
-  --brand-b: #8ab4ff;
-  --brand-c: #fbf197;
-  --brand-d: #f598e8;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --brand-a: #fff282;
+  --brand-b: #82fbd0;
+  --brand-c: #ffffff;
+  --brand-d: #c07af6;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -27,7 +52,7 @@
 body {
   background: #000000;
   color: var(--foreground);
-  font-family: var(--font-actay-regular), sans-serif;
+  font-family: "Actay", system-ui, sans-serif;
   position: relative;
   isolation: isolate;
   color-scheme: dark;

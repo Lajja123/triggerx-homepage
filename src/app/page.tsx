@@ -11,8 +11,8 @@ import Section5 from "@/components/Section5";
 import Footer from "@/components/Footer";
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [showContent, setShowContent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showContent, setShowContent] = useState(true);
 
   useEffect(() => {
     // Handle loading completion
@@ -45,11 +45,12 @@ export default function Home() {
       >
         <Header />
         <Section1 />
+        {/* <Section1 />
         <Section2 />
         <Section3 />
         <Section4 />
-        <Section5 />
-        <Footer />
+        <Section5 /> */}
+        {/* <Footer /> */}
       </div>
 
       {/* Optional: Add a fade overlay during transition */}

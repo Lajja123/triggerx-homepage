@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Boxdata from "./Boxdata";
+import Boxdata from "./data/Boxdata";
 import Image from "next/image";
 
 // Register ScrollTrigger plugin
