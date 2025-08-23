@@ -2,6 +2,12 @@
 import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+// Register ScrollTrigger plugin
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 // Import letter images
 const letters = [
@@ -21,8 +27,13 @@ const LoadingAnimation = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const lettersRef = useRef<(HTMLDivElement | null)[]>([]);
   const particlesRef = useRef<HTMLDivElement>(null);
+  const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
 
   useEffect(() => {
+    // Add loading classes to body and html
+    document.body.classList.add("loading-active");
+    document.documentElement.classList.add("loading-active");
+
     // Initialize GSAP
     gsap.set(lettersRef.current, {
       scale: 0,
@@ -35,13 +46,10 @@ const LoadingAnimation = () => {
     // Create timeline for the entire animation
     const tl = gsap.timeline({
       onComplete: () => {
-        // Set up scroll listener for zoom out
-        setupScrollListener();
-
-        // Also check if page is scrollable and add fallback
-        setTimeout(() => {
-          checkScrollability();
-        }, 1000);
+        console.log(
+          "Initial letter animation completed, setting up scroll trigger"
+        );
+        setupScrollTrigger();
       },
     });
 
@@ -86,7 +94,7 @@ const LoadingAnimation = () => {
       {
         // 'i' letter
         rotation: 360,
-        duration: 1.5,
+        duration: 0.5,
         ease: "power2.out",
       },
       2
@@ -119,123 +127,125 @@ const LoadingAnimation = () => {
 
     return () => {
       tl.kill();
+      if (scrollTriggerRef.current) {
+        scrollTriggerRef.current.kill();
+      }
     };
   }, []);
 
-  const checkScrollability = () => {
-    // Check if the page is scrollable
-    const isScrollable =
-      document.documentElement.scrollHeight > window.innerHeight;
-    console.log("Page scrollable:", isScrollable);
+  const setupScrollTrigger = () => {
+    console.log("Setting up GSAP ScrollTrigger...");
 
-    if (!isScrollable) {
-      // If page is not scrollable, add a temporary scrollable element
-      const tempDiv = document.createElement("div");
-      tempDiv.style.height = "200vh";
-      tempDiv.style.position = "absolute";
-      tempDiv.style.top = "0";
-      tempDiv.style.left = "0";
-      tempDiv.style.width = "100%";
-      tempDiv.style.pointerEvents = "none";
-      tempDiv.style.zIndex = "-1";
-      document.body.appendChild(tempDiv);
+    // Create a scrollable container if needed
+    const scrollContainer = document.createElement("div");
+    scrollContainer.id = "scroll-trigger-container";
+    scrollContainer.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 200vh;
+      pointer-events: none;
+      z-index: -1;
+    `;
+    document.body.appendChild(scrollContainer);
 
-      // Remove it after animation
-      setTimeout(() => {
-        if (tempDiv.parentNode) {
-          tempDiv.parentNode.removeChild(tempDiv);
+    // Create ScrollTrigger for the zoom out animation
+    scrollTriggerRef.current = ScrollTrigger.create({
+      trigger: scrollContainer,
+      start: "top top",
+      end: "bottom bottom",
+      scrub: 1,
+      onUpdate: (self) => {
+        const progress = self.progress;
+        console.log("Scroll progress:", progress);
+
+        // Trigger zoom out when scroll progress reaches 0.1 (10%)
+        if (progress > 0.1 && !isZoomedOut) {
+          console.log("Scroll threshold reached, triggering zoom out");
+          triggerZoomOut();
         }
-      }, 10000);
-    }
-  };
-
-  const setupScrollListener = () => {
-    let hasTriggered = false;
-
-    const triggerIfNotAlready = (eventType: string) => {
-      console.log(`Trigger attempt from: ${eventType}`);
-      if (!hasTriggered && !isZoomedOut) {
-        console.log(`Triggering zoom out from: ${eventType}`);
-        hasTriggered = true;
-        triggerZoomOut();
-        // Clean up all listeners
-        cleanupListeners();
-      }
-    };
-
-    const cleanupListeners = () => {
-      window.removeEventListener("scroll", () => triggerIfNotAlready("scroll"));
-      window.removeEventListener("mousemove", () =>
-        triggerIfNotAlready("mousemove")
-      );
-      window.removeEventListener("click", () => triggerIfNotAlready("click"));
-      window.removeEventListener("keydown", () =>
-        triggerIfNotAlready("keydown")
-      );
-      window.removeEventListener("touchstart", () =>
-        triggerIfNotAlready("touchstart")
-      );
-      window.removeEventListener("wheel", () => triggerIfNotAlready("wheel"));
-    };
-
-    // Multiple trigger methods for better reliability
-    window.addEventListener("scroll", () => triggerIfNotAlready("scroll"), {
-      passive: true,
-    });
-    window.addEventListener(
-      "mousemove",
-      () => triggerIfNotAlready("mousemove"),
-      { passive: true }
-    );
-    window.addEventListener("click", () => triggerIfNotAlready("click"), {
-      passive: true,
-    });
-    window.addEventListener("keydown", () => triggerIfNotAlready("keydown"), {
-      passive: true,
-    });
-    window.addEventListener(
-      "touchstart",
-      () => triggerIfNotAlready("touchstart"),
-      { passive: true }
-    );
-    window.addEventListener("wheel", () => triggerIfNotAlready("wheel"), {
-      passive: true,
+      },
+      onEnter: () => {
+        console.log("ScrollTrigger entered");
+      },
+      onLeave: () => {
+        console.log("ScrollTrigger left");
+      },
+      onEnterBack: () => {
+        console.log("ScrollTrigger entered back");
+      },
+      onLeaveBack: () => {
+        console.log("ScrollTrigger left back");
+      },
     });
 
-    // Auto-trigger after 3 seconds if no interaction
+    // Alternative trigger using wheel events with GSAP
+    const wheelTrigger = ScrollTrigger.create({
+      trigger: "body",
+      start: "top top",
+      end: "bottom bottom",
+      onUpdate: (self) => {
+        // This will trigger on any scroll movement
+        if (!isZoomedOut) {
+          console.log("Wheel scroll detected, triggering zoom out");
+          triggerZoomOut();
+        }
+      },
+      onEnter: () => {
+        if (!isZoomedOut) {
+          console.log("Wheel trigger entered, triggering zoom out");
+          triggerZoomOut();
+        }
+      },
+    });
+
+    // Auto-trigger after 5 seconds if no scroll interaction
     setTimeout(() => {
-      if (!hasTriggered && !isZoomedOut) {
+      if (!isZoomedOut) {
         console.log("Auto-triggering after timeout");
-        hasTriggered = true;
         triggerZoomOut();
-        cleanupListeners();
       }
-    }, 3000);
-
-    // Also trigger on any DOM change or resize
-    const observer = new MutationObserver(() => {
-      if (!hasTriggered && !isZoomedOut) {
-        console.log("Triggering from DOM mutation");
-        hasTriggered = true;
-        triggerZoomOut();
-        cleanupListeners();
-        observer.disconnect();
-      }
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
+    }, 5000);
 
     // Cleanup function
-    return cleanupListeners;
+    return () => {
+      if (scrollTriggerRef.current) {
+        scrollTriggerRef.current.kill();
+      }
+      if (wheelTrigger) {
+        wheelTrigger.kill();
+      }
+      const container = document.getElementById("scroll-trigger-container");
+      if (container && container.parentNode) {
+        container.parentNode.removeChild(container);
+      }
+    };
   };
 
   const triggerZoomOut = () => {
+    console.log("triggerZoomOut called, isZoomedOut:", isZoomedOut);
     if (isZoomedOut) return;
 
+    console.log("Starting X letter zoom out animation");
     setIsZoomedOut(true);
+
+    // Clean up ScrollTrigger
+    if (scrollTriggerRef.current) {
+      scrollTriggerRef.current.kill();
+      scrollTriggerRef.current = null;
+    }
+
+    // Clean up scroll trigger container
+    const scrollContainer = document.getElementById("scroll-trigger-container");
+    if (scrollContainer && scrollContainer.parentNode) {
+      scrollContainer.parentNode.removeChild(scrollContainer);
+    }
+
+    // Remove loading classes
+    document.body.classList.remove("loading-active");
+    document.documentElement.classList.remove("loading-active");
+    console.log("Removed loading classes");
 
     // Quick removal of all letters except X
     lettersRef.current.forEach((letter, index) => {
@@ -319,6 +329,11 @@ const LoadingAnimation = () => {
 
       // Add particle trail effect for X
       createParticleTrail(xLetter, moveX, moveY, maxScale);
+
+      // Dispatch completion event when animation finishes
+      tl.call(() => {
+        window.dispatchEvent(new CustomEvent("loadingAnimationComplete"));
+      });
     }
   };
 
@@ -385,7 +400,9 @@ const LoadingAnimation = () => {
     <div
       ref={containerRef}
       className={`absolute inset-0 flex items-center justify-center transition-all duration-1000 ease-in-out ${
-        isComplete ? "opacity-0 pointer-events-none" : "opacity-100"
+        isComplete
+          ? "opacity-0 pointer-events-none"
+          : "opacity-100 pointer-events-auto"
       }`}
       style={{ zIndex: 50 }}
     >
@@ -434,18 +451,11 @@ const LoadingAnimation = () => {
       {!isZoomedOut && (
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-4">
           <div className="text-white/60 text-sm animate-pulse text-center">
-            Scroll, click, or press any key to continue
+            Scroll to trigger X letter animation
           </div>
-          <button
-            onClick={() => {
-              if (!isZoomedOut) {
-                triggerZoomOut();
-              }
-            }}
-            className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-300 border border-white/20 hover:border-white/40 hover:scale-105"
-          >
-            Continue
-          </button>
+          <div className="text-white/40 text-xs text-center">
+            (Use mouse wheel or touch to scroll)
+          </div>
         </div>
       )}
     </div>

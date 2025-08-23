@@ -133,6 +133,42 @@ export default function Section1() {
           y: mousePosition.y,
         });
       }
+
+      // Animated "i" letter in "Automation"
+      const animatedI = sectionRef.current?.querySelectorAll(".animated-i");
+      animatedI?.forEach((letter) => {
+        // Create a timeline for the animation
+        const tl = gsap.timeline({ repeat: -1, delay: 50 });
+
+        tl.to(letter, {
+          y: -30,
+          rotationX: 360,
+          duration: 0.75,
+          ease: "power2.inOut",
+        })
+          .to(
+            letter,
+            {
+              innerHTML: "i",
+              duration: 0,
+            },
+            "-=0.75"
+          )
+          .to(letter, {
+            y: 0,
+            rotationY: 0,
+            duration: 0.75,
+            ease: "power2.inOut",
+          })
+          .to(
+            letter,
+            {
+              innerHTML: "!",
+              duration: 0,
+            },
+            "-=0.75"
+          );
+      });
     }, sectionRef);
 
     return () => ctx.revert();
@@ -226,19 +262,10 @@ export default function Section1() {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Mouse follower */}
-      <div className="mouse-follower fixed w-10 h-10 rounded-full pointer-events-none z-50 transition-transform duration-100 ease-out flex items-center justify-center">
-        <Image
-          src="/letters/x.png"
-          alt="TriggerX"
-          width={20}
-          height={20}
-          className="w-5 h-5 opacity-80"
-        />
-      </div>
+      {/* Mouse follower removed - now handled globally */}
 
       {/* Sticky Left Corner Element - Enhanced */}
-      <div className="fixed left-0 top-0 h-full z-50">
+      <div className="fixed left-0 top-0 h-full z-40">
         <div className="h-full w-16  flex flex-row items-center justify-center group cursor-pointer ">
           <div className="transform -rotate-90 text-white text-sm font-medium tracking-wider group-hover:text-[#c07af6] transition-colors duration-300">
             <span className="block text-xs opacity-70 mb-2">POWERED BY</span>
@@ -276,8 +303,8 @@ export default function Section1() {
         >
           {/* 3D Text Layers */}
           <div className="relative">
-            {/* Background shadow layer */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold text-black/20 leading-tight tracking-tight absolute inset-0 transform translate-x-2 translate-y-2 blur-sm">
+            {/* Background shadow layer - removed black shadow */}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold text-transparent leading-tight tracking-tight absolute inset-0 transform translate-x-2 translate-y-2 blur-sm">
               <span className="block tracking-wide mb-2 sm:mb-3">
                 Effortless Blockchain
               </span>
@@ -292,7 +319,7 @@ export default function Section1() {
               <span className="interactive-text block tracking-wide mb-2 sm:mb-3 relative group cursor-pointer glitch-text">
                 <span className="relative z-10">Effortless Blockchain</span>
                 <span
-                  className="glitch-layer absolute inset-0 text-[#c07af6] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  className="glitch-layer absolute inset-0 text-[#82FBD0] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   style={{ transform: "translate(2px, 0)" }}
                 >
                   Effortless Blockchain
@@ -305,26 +332,38 @@ export default function Section1() {
                 </span>
               </span>
               <span className="interactive-text block tracking-wide relative group cursor-pointer glitch-text">
-                <span className="relative z-10 bg-gradient-to-r from-[#c07af6] to-[#fbf197] bg-clip-text text-transparent">
-                  Automation
+                <span className="relative z-10 bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
+                  Automat
+                  <span className="animated-i inline-block animate-bounce-reverse">
+                    i
+                  </span>
+                  on
                 </span>
                 <span
-                  className="glitch-layer absolute inset-0 text-[#c07af6] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  className="glitch-layer absolute inset-0 text-[#82FBD0]  transition-opacity duration-300"
                   style={{ transform: "translate(2px, 0)" }}
                 >
-                  Automation
+                  Automat
+                  <span className="animated-i inline-block animate-bounce-reverse">
+                    i
+                  </span>
+                  on
                 </span>
                 <span
-                  className="glitch-layer absolute inset-0 text-[#fbf197] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  className="glitch-layer absolute inset-0 text-[#fbf197] transition-opacity duration-300"
                   style={{ transform: "translate(-2px, 0)" }}
                 >
-                  Automation
+                  Automat
+                  <span className="animated-i inline-block animate-bounce-reverse">
+                    i
+                  </span>
+                  on
                 </span>
               </span>
               <span className="interactive-text block tracking-wide mt-4 relative group cursor-pointer glitch-text">
                 <span className="relative z-10">.Limitless Potential.</span>
                 <span
-                  className="glitch-layer absolute inset-0 text-[#c07af6] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  className="glitch-layer absolute inset-0 text-[#82FBD0] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   style={{ transform: "translate(2px, 0)" }}
                 >
                   .Limitless Potential.

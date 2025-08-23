@@ -236,8 +236,8 @@ export default function Header() {
   return (
     <header
       ref={headerRef}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "shadow-2xl shadow-[#C07AF6]/20" : ""
+      className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
+        isScrolled ? "shadow-2xl shadow-[#FFFFFF]/20 backdrop-blur-xl " : ""
       }`}
     >
       <div className="relative z-10 w-full mx-auto px-4 sm:px-6 py-4 flex items-center justify-between border-b border-white/10">
@@ -295,7 +295,7 @@ export default function Header() {
           <button
             ref={mobileMenuButtonRef}
             onClick={toggleMobileMenu}
-            className="lg:hidden flex flex-col justify-center items-center w-10 h-10 rounded-lg hover:bg-white/5 transition-all duration-300 group relative z-50"
+            className="lg:hidden flex flex-col justify-center items-center w-10 h-10 rounded-lg hover:bg-white/5 transition-all duration-300 group relative z-[110]"
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           >
             <div className="relative w-6 h-4 flex flex-col justify-center">
@@ -312,7 +312,7 @@ export default function Header() {
                 }`}
               ></div>
               <div
-                className={`absolute w-6 h-0.5 bg-[#C07AF6] transition-all duration-300  ${
+                className={`absolute w-6 h-0.5 bg-[#82FBD0] transition-all duration-300  ${
                   isMobileMenuOpen ? "-rotate-45 top-1.5" : "top-3"
                 }`}
               ></div>
@@ -324,7 +324,7 @@ export default function Header() {
       {/* Mobile Navigation Menu */}
       <div
         ref={mobileNavRef}
-        className="lg:hidden fixed left-0 right-0 bg-black/95 backdrop-blur-xl border-b border-white/10 z-40"
+        className="lg:hidden fixed left-0 right-0 bg-black/95  border-b border-white/10 z-[90]"
         style={{
           display: "none",
           top: `${headerRef.current?.offsetHeight || 80}px`,

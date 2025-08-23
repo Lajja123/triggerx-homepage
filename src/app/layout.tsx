@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/Header";
 import LoadingAnimation from "@/components/LoadingAnimation";
+import Footer from "@/components/Footer";
+import MouseFollower from "../components/MouseFollower";
 
 export const metadata: Metadata = {
   title: "TriggerX - Homepage",
@@ -16,7 +18,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {/* <MouseFollower /> */}
+        <Header />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }

@@ -159,7 +159,7 @@ const triggerxLetters = [
   { letter: "G", src: "/letters/g.png" },
   { letter: "E", src: "/letters/e.png" },
   { letter: "R", src: "/letters/r.png" },
-  { letter: "X", src: "/letters/x.png" },
+  { letter: "X", src: "/letters/Vector.png" },
 ];
 
 function Footer() {
@@ -272,12 +272,6 @@ function Footer() {
           }
         );
       });
-
-      // Mouse follower animation
-      const mouseFollower = footerRef.current?.querySelector(".mouse-follower");
-      if (mouseFollower) {
-        gsap.set(mouseFollower, { opacity: 0 });
-      }
     }, footerRef);
 
     return () => ctx.revert();
@@ -328,15 +322,6 @@ function Footer() {
       className="relative z-10 flex flex-col items-center justify-center gap-[5px] md:gap-[40px] lg:gap-[80px] 2xl:gap-[120px] mt-[80px] lg:mt-0 min-h-screen overflow-hidden"
       onMouseMove={handleMouseMove}
     >
-      {/* Animated background */}
-      <div className="animated-bg absolute inset-0 "></div>
-
-      {/* Floating background elements */}
-      <div className="floating-element absolute top-20 left-10 w-24 h-24 bg-gradient-to-br from-[#82FBD0]/10 to-transparent rounded-full opacity-30"></div>
-      <div className="floating-element absolute top-40 right-20 w-20 h-20 bg-gradient-to-br from-[#5047FF]/10 to-transparent rounded-full opacity-40"></div>
-      <div className="floating-element absolute bottom-20 left-20 w-32 h-32 bg-gradient-to-br from-[#F8FF7C]/10 to-transparent rounded-full opacity-30"></div>
-      <div className="floating-element absolute bottom-40 right-10 w-28 h-28 bg-gradient-to-br from-[#82FBD0]/10 to-transparent rounded-full opacity-50"></div>
-
       {/* Mouse follower */}
 
       {/* Main Content Area */}
