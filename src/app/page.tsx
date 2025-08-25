@@ -36,13 +36,11 @@ export default function Home() {
   }, []);
 
   return (
-    <div className={`min-h-screen relative `}>
-      <div>
-        <Section1 />
-        <Section2 />
-        {/* <Section3 /> */}
-        {/* <Footer /> */}
-      </div>
-    </div>
+    <>
+      <Section1 />
+      {/* <Section2 /> */}
+      {/* <Section3 /> */}
+      {/* <Footer /> */}
+    </>
   );
 }

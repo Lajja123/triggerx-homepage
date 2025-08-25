@@ -25,26 +25,37 @@ export default function Section1() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Main headline animation with text reveal
+      // GSAP Text Animation - Split text and animate each character
       const headlineElement = headlineRef.current;
       if (headlineElement) {
-        gsap.fromTo(
-          headlineElement,
-          { opacity: 0, y: 100, scale: 0.8 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 1.5,
-            ease: "back.out(1.7)",
-            scrollTrigger: {
-              trigger: headlineElement,
-              start: "top 80%",
-              end: "bottom 20%",
-              toggleActions: "play none none reverse",
+        // Split text into individual characters
+        const textElements = headlineElement.querySelectorAll(".text-char");
+        textElements.forEach((char, index) => {
+          gsap.fromTo(
+            char,
+            {
+              opacity: 0,
+              y: 50,
+              rotationX: 90,
+              scale: 0.5,
             },
-          }
-        );
+            {
+              opacity: 1,
+              y: 0,
+              rotationX: 0,
+              scale: 1,
+              duration: 0.8,
+              delay: index * 0.05,
+              ease: "back.out(1.7)",
+              scrollTrigger: {
+                trigger: headlineElement,
+                start: "top 80%",
+                end: "bottom 20%",
+                toggleActions: "play none none reverse",
+              },
+            }
+          );
+        });
       }
 
       // CTA buttons with enhanced animations
@@ -84,30 +95,6 @@ export default function Section1() {
         });
       });
 
-      // Interactive text effects
-      const textElements =
-        sectionRef.current?.querySelectorAll(".interactive-text");
-      textElements?.forEach((text, index) => {
-        gsap.fromTo(
-          text,
-          { opacity: 0, y: 30, rotationX: 45 },
-          {
-            opacity: 1,
-            y: 0,
-            rotationX: 0,
-            duration: 1,
-            delay: index * 0.2,
-            ease: "back.out(1.7)",
-            scrollTrigger: {
-              trigger: text,
-              start: "top 85%",
-              end: "bottom 15%",
-              toggleActions: "play none none reverse",
-            },
-          }
-        );
-      });
-
       // Progress indicator
       const progressBar = sectionRef.current?.querySelector(".progress-bar");
       if (progressBar) {
@@ -138,26 +125,47 @@ export default function Section1() {
       const animatedI = sectionRef.current?.querySelectorAll(".animated-i");
       animatedI?.forEach((letter) => {
         // Create a timeline for the animation
-        const tl = gsap.timeline({ repeat: -1, delay: 50 });
+        const tl = gsap.timeline({ repeat: -1, delay: 2 });
 
+        // First rotation cycle
         tl.to(letter, {
-          y: -30,
-          rotationX: 360,
-          duration: 0.75,
+          rotationX: 180,
+          scale: 1.2,
+          duration: 0.6,
           ease: "power2.inOut",
         })
+          .to(
+            letter,
+            {
+              innerHTML: "!",
+              duration: 0,
+            },
+            "-=0.3"
+          )
+          .to(letter, {
+            rotationX: 360,
+            scale: 1,
+            duration: 0.6,
+            ease: "power2.inOut",
+          })
           .to(
             letter,
             {
               innerHTML: "i",
               duration: 0,
             },
-            "-=0.75"
+            "-=0.3"
           )
+          // Pause when showing "i"
           .to(letter, {
-            y: 0,
-            rotationY: 0,
-            duration: 0.75,
+            duration: 2.5,
+            ease: "none",
+          })
+          // Second rotation cycle
+          .to(letter, {
+            rotationX: 540,
+            scale: 1.2,
+            duration: 0.6,
             ease: "power2.inOut",
           })
           .to(
@@ -166,8 +174,27 @@ export default function Section1() {
               innerHTML: "!",
               duration: 0,
             },
-            "-=0.75"
-          );
+            "-=0.3"
+          )
+          .to(letter, {
+            rotationX: 720,
+            scale: 1,
+            duration: 0.6,
+            ease: "power2.inOut",
+          })
+          .to(
+            letter,
+            {
+              innerHTML: "i",
+              duration: 0,
+            },
+            "-=0.3"
+          )
+          // Pause when showing "i" again
+          .to(letter, {
+            duration: 2.5,
+            ease: "none",
+          });
       });
     }, sectionRef);
 
@@ -257,7 +284,6 @@ export default function Section1() {
   return (
     <div
       ref={sectionRef}
-      className="relative min-h-screen overflow-hidden"
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -296,98 +322,69 @@ export default function Section1() {
       />
 
       <section className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 md:px-8 lg:px-12 pt-8 sm:pt-12 md:pt-16">
-        {/* Main Headline - Enhanced with interactive elements */}
+        {/* Main Headline - Enhanced with GSAP text animation */}
         <div
           ref={headlineRef}
           className="text-center mb-8 sm:mb-10 md:mb-12 px-2 sm:px-4 relative"
         >
-          {/* 3D Text Layers */}
-          <div className="relative">
-            {/* Background shadow layer - removed black shadow */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold text-transparent leading-tight tracking-tight absolute inset-0 transform translate-x-2 translate-y-2 blur-sm">
-              <span className="block tracking-wide mb-2 sm:mb-3">
-                Effortless Blockchain
-              </span>
-              <span className="block tracking-wide">Automation</span>
-              <span className="block tracking-wide mt-4">
-                .Limitless Potential.
-              </span>
-            </h1>
-
-            {/* Main text layer */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold text-white leading-tight tracking-tight relative z-10">
-              <span className="interactive-text block tracking-wide mb-2 sm:mb-3 relative group cursor-pointer glitch-text">
-                <span className="relative z-10">Effortless Blockchain</span>
-                <span
-                  className="glitch-layer absolute inset-0 text-[#82FBD0] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  style={{ transform: "translate(2px, 0)" }}
-                >
-                  Effortless Blockchain
+          {/* Main text layer */}
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold text-white leading-tight tracking-tight relative z-10">
+            <span className="block tracking-wide mb-2 sm:mb-3">
+              {"Effortless Blockchain".split("").map((char, index) => (
+                <span key={index} className="text-char inline-block">
+                  {char === " " ? "\u00A0" : char}
                 </span>
-                <span
-                  className="glitch-layer absolute inset-0 text-[#fbf197] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  style={{ transform: "translate(-2px, 0)" }}
-                >
-                  Effortless Blockchain
+              ))}
+            </span>
+            <span className="block tracking-wide">
+              {"Automation".split("").map((char, index) => (
+                <span key={index} className="text-char inline-block">
+                  {char === "A" ? (
+                    <span className="bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
+                      {char}
+                    </span>
+                  ) : char === "u" ? (
+                    <span className="bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
+                      {char}
+                    </span>
+                  ) : char === "t" ? (
+                    <span className="bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
+                      {char}
+                    </span>
+                  ) : char === "o" ? (
+                    <span className="bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
+                      {char}
+                    </span>
+                  ) : char === "m" ? (
+                    <span className="bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
+                      {char}
+                    </span>
+                  ) : char === "a" ? (
+                    <span className="bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
+                      {char}
+                    </span>
+                  ) : char === "i" ? (
+                    <span className="animated-i inline-block bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
+                      {char}
+                    </span>
+                  ) : char === "n" ? (
+                    <span className="bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
+                      {char}
+                    </span>
+                  ) : (
+                    char
+                  )}
                 </span>
-              </span>
-              <span className="interactive-text block tracking-wide relative group cursor-pointer glitch-text">
-                <span className="relative z-10 bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
-                  Automat
-                  <span className="animated-i inline-block animate-bounce-reverse">
-                    i
-                  </span>
-                  on
+              ))}
+            </span>
+            <span className="block tracking-wide mt-4">
+              {".Limitless Potential.".split("").map((char, index) => (
+                <span key={index} className="text-char inline-block">
+                  {char === " " ? "\u00A0" : char}
                 </span>
-                <span
-                  className="glitch-layer absolute inset-0 text-[#82FBD0]  transition-opacity duration-300"
-                  style={{ transform: "translate(2px, 0)" }}
-                >
-                  Automat
-                  <span className="animated-i inline-block animate-bounce-reverse">
-                    i
-                  </span>
-                  on
-                </span>
-                <span
-                  className="glitch-layer absolute inset-0 text-[#fbf197] transition-opacity duration-300"
-                  style={{ transform: "translate(-2px, 0)" }}
-                >
-                  Automat
-                  <span className="animated-i inline-block animate-bounce-reverse">
-                    i
-                  </span>
-                  on
-                </span>
-              </span>
-              <span className="interactive-text block tracking-wide mt-4 relative group cursor-pointer glitch-text">
-                <span className="relative z-10">.Limitless Potential.</span>
-                <span
-                  className="glitch-layer absolute inset-0 text-[#82FBD0] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  style={{ transform: "translate(2px, 0)" }}
-                >
-                  .Limitless Potential.
-                </span>
-                <span
-                  className="glitch-layer absolute inset-0 text-[#fbf197] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  style={{ transform: "translate(-2px, 0)" }}
-                >
-                  .Limitless Potential.
-                </span>
-              </span>
-            </h1>
-
-            {/* Highlight layer */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold text-white/10 leading-tight tracking-tight absolute inset-0 transform -translate-x-1 -translate-y-1">
-              <span className="block tracking-wide mb-2 sm:mb-3">
-                Effortless Blockchain
-              </span>
-              <span className="block tracking-wide">Automation</span>
-              <span className="block tracking-wide mt-4">
-                .Limitless Potential.
-              </span>
-            </h1>
-          </div>
+              ))}
+            </span>
+          </h1>
         </div>
 
         {/* CTA Buttons - Enhanced with interactive effects */}

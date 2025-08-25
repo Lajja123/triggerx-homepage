@@ -39,6 +39,18 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close mobile menu when screen size changes to large
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024 && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isMobileMenuOpen]);
+
   // Close mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -237,10 +249,12 @@ export default function Header() {
     <header
       ref={headerRef}
       className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
-        isScrolled ? "shadow-2xl shadow-[#FFFFFF]/20 backdrop-blur-xl " : ""
+        isScrolled
+          ? "  bg-gradient-to-r from-black/20 via-black/10 to-black/20 backdrop-blur-xl shadow-2xl shadow-[#FFFFFF]/20"
+          : ""
       }`}
     >
-      <div className="relative z-10 w-full mx-auto px-4 sm:px-6 py-4 flex items-center justify-between border-b border-white/10">
+      <div className="relative z-10 w-full mx-auto px-4 sm:px-6 py-4 flex items-center justify-between ">
         <div className="flex gap-8 lg:gap-16 items-center">
           {/* Enhanced Logo */}
           <Link href="/" className="flex items-center space-x-1 group">
@@ -253,9 +267,9 @@ export default function Header() {
                   key={index}
                   src={`/letters/${letter}.png`}
                   alt={letter.toUpperCase()}
-                  width={20}
-                  height={20}
-                  className="cursor-pointer transition-all duration-300 hover:scale-110 sm:w-7 sm:h-7"
+                  width={28}
+                  height={28}
+                  className="cursor-pointer transition-all duration-300 hover:scale-110 w-5 h-5 sm:w-7 sm:h-7"
                 />
               ))}
             </div>
@@ -312,7 +326,7 @@ export default function Header() {
                 }`}
               ></div>
               <div
-                className={`absolute w-6 h-0.5 bg-[#82FBD0] transition-all duration-300  ${
+                className={`absolute w-6 h-0.5 bg-[#C07AF6] transition-all duration-300  ${
                   isMobileMenuOpen ? "-rotate-45 top-1.5" : "top-3"
                 }`}
               ></div>
@@ -324,7 +338,7 @@ export default function Header() {
       {/* Mobile Navigation Menu */}
       <div
         ref={mobileNavRef}
-        className="lg:hidden fixed left-0 right-0 bg-black/95  border-b border-white/10 z-[90]"
+        className="lg:hidden fixed left-0 right-0 bg-black/95 border-b border-white/10 z-[90]"
         style={{
           display: "none",
           top: `${headerRef.current?.offsetHeight || 80}px`,
@@ -365,7 +379,7 @@ export default function Header() {
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-30"
+          className="lg:hidden fixed inset-0 bg-black/50 z-30"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}

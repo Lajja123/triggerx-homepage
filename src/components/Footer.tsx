@@ -89,67 +89,6 @@ const footerSocialLinks = [
   },
 ];
 
-const footerNavLinksTop = [
-  {
-    id: "status",
-    label: "Status",
-    href: "https://status.triggerx.network/",
-    isLink: true,
-    target: "_blank",
-    rel: "noopener noreferrer",
-    className: "hover:text-gray-400 transition-colors",
-  },
-  {
-    id: "build",
-    label: "Build",
-    href: "/",
-    isLink: true,
-    className: "hover:text-gray-400 transition-colors",
-  },
-  {
-    id: "docs",
-    label: "Docs",
-    href: "https://triggerx.gitbook.io/triggerx-docs",
-    isLink: true,
-    target: "_blank",
-    rel: "noopener noreferrer",
-    className: "hover:text-gray-400 transition-colors",
-  },
-  {
-    id: "devhub",
-    label: "Dev Hub",
-    href: "/devhub",
-    isLink: true,
-    className: "hover:text-gray-400 transition-colors",
-  },
-];
-
-const footerNavLinksBottom = [
-  {
-    id: "joinAsKeeper",
-    label: "Join As Keeper",
-    href: "https://triggerx.gitbook.io/triggerx-docs/getting-started-as-keepers",
-    isLink: true,
-    target: "_blank",
-    rel: "noopener noreferrer",
-    className: "hover:text-gray-400 transition-colors",
-  },
-  {
-    id: "termsOfUse",
-    label: "Term of Use",
-    isLink: false,
-    title: "Available Soon",
-    className: "hover:text-gray-400 transition-colors cursor-default",
-  },
-  {
-    id: "privacyPolicy",
-    label: "Privacy Policy",
-    isLink: false,
-    title: "Available Soon",
-    className: "hover:text-gray-400 transition-colors cursor-default",
-  },
-];
-
 // Letter configuration for TRIGGERX
 const triggerxLetters = [
   { letter: "T", src: "/letters/t.png" },
@@ -162,6 +101,147 @@ const triggerxLetters = [
   { letter: "X", src: "/letters/Vector.png" },
 ];
 
+// Sticky Social Icons Component
+const StickySocialIcons = () => {
+  const [hoveredIcon, setHoveredIcon] = useState<string | null>(null);
+  const [showTooltip, setShowTooltip] = useState<string | null>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Initial animation for sticky social icons
+      gsap.fromTo(
+        ".sticky-social-icon",
+        {
+          opacity: 0,
+          x: 50,
+          scale: 0.8,
+        },
+        {
+          opacity: 1,
+          x: 0,
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: "back.out(1.7)",
+          delay: 0.5,
+        }
+      );
+
+      // Continuous floating animation
+      gsap.to(".sticky-social-icon", {
+        y: -5,
+        duration: 2,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        stagger: 0.2,
+      });
+    }, stickyRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  const handleSocialHover = (id: string) => {
+    setHoveredIcon(id);
+    setShowTooltip(id);
+
+    const icon = stickyRef.current?.querySelector(
+      `[data-sticky-social="${id}"]`
+    );
+    if (icon) {
+      gsap.to(icon, {
+        scale: 1.3,
+        duration: 0.3,
+        ease: "back.out(1.7)",
+      });
+    }
+  };
+
+  const handleSocialLeave = (id: string) => {
+    setHoveredIcon(null);
+    setShowTooltip(null);
+
+    const icon = stickyRef.current?.querySelector(
+      `[data-sticky-social="${id}"]`
+    );
+    if (icon) {
+      gsap.to(icon, {
+        scale: 1,
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    }
+  };
+
+  return (
+    <div
+      ref={stickyRef}
+      className="fixed right-4 top-1/2 transform -translate-y-1/2 z-50 hidden lg:flex flex-col gap-3"
+    >
+      {footerSocialLinks.map((link) => (
+        <div
+          key={link.id}
+          data-sticky-social={link.id}
+          className="sticky-social-icon group relative"
+        >
+          {/* Small Animated Tooltip */}
+          {showTooltip === link.id && (
+            <div className="absolute right-12 top-1/2 transform -translate-y-1/2 bg-black/90 backdrop-blur-sm text-white px-2 py-1 rounded text-xs font-medium whitespace-nowrap border border-white/20 shadow-lg ">
+              <div className="relative">{link.title}</div>
+            </div>
+          )}
+
+          <a
+            href={link.href}
+            className={`flex items-center justify-center w-10 h-10 overflow-hidden rounded-full transition-all duration-300 ${
+              link.applyBorderEffect
+                ? "border border-white/30  hover:bg-[#FFFFFF] hover:border-[#FFFFFF]"
+                : ""
+            }`}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={link.alt}
+            onMouseEnter={() => handleSocialHover(link.id)}
+            onMouseLeave={() => handleSocialLeave(link.id)}
+          >
+            <Image
+              src={hoveredIcon === link.id ? link.iconDark : link.iconLight}
+              alt={link.alt}
+              width={20}
+              height={20}
+              className="w-4 h-4 object-contain transition-all duration-300 group-hover:scale-110"
+            />
+
+            {/* Hover glow effect */}
+            <div
+              className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              style={{ boxShadow: "0 0 15px rgba(130, 251, 208, 0.6)" }}
+            ></div>
+          </a>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// Replace footerMainNavLinks with status/build/terms/privacy links
+const footerMainNavLinks = [
+  {
+    href: "https://status.triggerx.network/",
+    text: "Status",
+    isExternal: true,
+  },
+  { href: "/", text: "Build", isExternal: false },
+  {
+    href: "https://triggerx.gitbook.io/triggerx-docs",
+    text: "Docs",
+    isExternal: true,
+  },
+  { href: "#", text: "Term of Use", isExternal: false },
+  { href: "#", text: "Privacy Policy", isExternal: false },
+];
+
 function Footer() {
   const currentYear = new Date().getFullYear();
   const [hoveredIcon, setHoveredIcon] = useState<string | null>(null);
@@ -170,6 +250,7 @@ function Footer() {
   const socialLinksRef = useRef<HTMLDivElement>(null);
   const lettersRef = useRef<HTMLDivElement>(null);
   const navLinksRef = useRef<HTMLDivElement>(null);
+  const mainNavRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -317,195 +398,96 @@ function Footer() {
   };
 
   return (
-    <footer
-      ref={footerRef}
-      className="relative z-10 flex flex-col items-center justify-center gap-[5px] md:gap-[40px] lg:gap-[80px] 2xl:gap-[120px] mt-[80px] lg:mt-0 min-h-screen overflow-hidden"
-      onMouseMove={handleMouseMove}
-    >
-      {/* Mouse follower */}
+    <>
+      {/* Sticky Social Icons */}
+      <StickySocialIcons />
 
-      {/* Main Content Area */}
-      <div className="z-40 flex mt-10 md:mt-20 flex-col-reverse sm:flex-row items-start sm:items-end justify-between gap-10 w-[88%] sm:w-[95%] md:w-[85%] xl:w-[70%] mx-auto">
-        {/* Left Section: Social Links & Copyright */}
+      <footer
+        ref={footerRef}
+        className="relative z-10 flex flex-col items-center justify-center gap-[5px] md:gap-[40px] lg:gap-[80px] 2xl:gap-[120px] mt-[80px] lg:mt-0 min-h-screen overflow-hidden"
+        onMouseMove={handleMouseMove}
+      >
+        {/* Animated Letters Banner */}
         <div
-          ref={socialLinksRef}
-          className="flex flex-col gap-4 w-full sm:w-auto mx-auto md:mx-0"
+          ref={lettersRef}
+          className="z-20 w-full mx-auto h-max pt-5 pb-3 mt-0 sm:mt-8 md:mt-12 group"
         >
-          <div className="flex space-x-2 xs:space-x-3 lg:space-x-4 items-center mr-auto">
-            {footerSocialLinks.map((link) => (
+          <div className="flex items-center justify-between w-full px-4 md:px-8 lg:px-12 xl:px-16">
+            {triggerxLetters.map((letterData, index) => (
               <div
-                key={link.id}
-                data-social={link.id}
-                className="social-link group relative"
-                title={link.title}
+                key={index}
+                className="letter relative cursor-pointer group flex-1 flex justify-center"
               >
-                <a
-                  href={link.href}
-                  className={`flex items-center justify-center w-7 h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 overflow-hidden rounded-full transition-all duration-300 ${
-                    link.applyBorderEffect
-                      ? "border border-white/30  hover:bg-[#FFFFFF]"
-                      : ""
-                  }`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={link.alt}
-                  onMouseEnter={() => handleSocialHover(link.id)}
-                  onMouseLeave={() => handleSocialLeave(link.id)}
-                >
-                  <Image
-                    src={
-                      hoveredIcon === link.id ? link.iconDark : link.iconLight
-                    }
-                    alt={link.alt}
-                    width={24}
-                    height={24}
-                    className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 object-contain transition-all duration-300 group-hover:scale-110"
-                  />
+                <Image
+                  src={letterData.src}
+                  alt={letterData.letter}
+                  width={100}
+                  height={100}
+                  className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 xl:w-40 xl:h-40 object-center transition-all duration-300 group-hover:drop-shadow(0 0 20px rgba(130, 251, 208, 0.6))"
+                />
 
-                  {/* Hover glow effect */}
-                  <div
-                    className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    style={{ boxShadow: "0 0 15px rgba(130, 251, 208, 0.4)" }}
-                  ></div>
-                </a>
+                {/* Glow effect on hover */}
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{
+                    filter: "drop-shadow(0 0 15px rgba(130, 251, 208, 0.8))",
+                    transform: "scale(1.1)",
+                  }}
+                ></div>
               </div>
             ))}
           </div>
-          <p className="text-start text-[10px] xs:text-[12px] lg:text-[13px] 2xl:text-[15px] text-gray-400 whitespace-nowrap hover:text-[#82FBD0] transition-colors duration-300">
-            © {currentYear} TriggerX. All rights reserved.
-          </p>
         </div>
 
-        {/* Right Section: Navigation Links */}
-        <div
-          ref={navLinksRef}
-          className="text-white w-full xs:w-[88%] sm:w-auto mx-auto md:mx-0 flex flex-col justify-center gap-4 md:gap-6 items-start md:items-end"
-        >
-          <div className="w-full md:w-auto flex justify-between sm:justify-end gap-x-6 gap-y-2 md:gap-x-7 lg:gap-x-12 text-[10px] xs:text-[12px] lg:text-[14px] 2xl:text-[15px] text-gray-300 whitespace-nowrap tracking-wide flex-wrap">
-            {footerNavLinksTop.map((item) => {
-              if (item.isLink) {
-                if (item.href && item.href.startsWith("http")) {
-                  // External link
-                  return (
-                    <a
-                      key={item.id}
-                      href={item.href}
-                      className={`nav-link ${item.className} hover:text-[#82FBD0] transition-all duration-300 hover:scale-105`}
-                      target={item.target || "_blank"}
-                      rel={item.rel || "noopener noreferrer"}
-                    >
-                      {item.label}
-                    </a>
-                  );
-                } else {
-                  // Internal link
-                  return (
-                    <a
-                      key={item.id}
-                      href={item.href}
-                      className={`nav-link ${item.className} hover:text-[#82FBD0] transition-all duration-300 hover:scale-105`}
-                    >
-                      {item.label}
-                    </a>
-                  );
-                }
-              } else {
-                // Not a link, just a span
-                return (
-                  <span key={item.id} className={`nav-link ${item.className}`}>
-                    {item.label}
-                  </span>
-                );
-              }
-            })}
-          </div>
-          <div className="w-full md:w-auto flex justify-between sm:justify-end gap-x-3 gap-y-2 md:gap-x-5 lg:gap-x-8 text-[10px] xs:text-[12px] lg:text-[14px] 2xl:text-[15px] text-gray-300 whitespace-nowrap tracking-wide flex-wrap">
-            {footerNavLinksBottom.map((item) => {
-              if (item.isLink) {
-                if (item.href && item.href.startsWith("http")) {
-                  // External link
-                  return (
-                    <a
-                      key={item.id}
-                      href={item.href}
-                      className={`nav-link ${item.className} hover:text-[#82FBD0] transition-all duration-300 hover:scale-105`}
-                      target={item.target || "_blank"}
-                      rel={item.rel || "noopener noreferrer"}
-                    >
-                      {item.label}
-                    </a>
-                  );
-                } else {
-                  // Internal link
-                  return (
-                    <a
-                      key={item.id}
-                      href={item.href}
-                      className={`nav-link ${item.className} hover:text-[#82FBD0] transition-all duration-300 hover:scale-105`}
-                    >
-                      {item.label}
-                    </a>
-                  );
-                }
-              } else {
-                // Not a link, just a span
-                return (
-                  <span key={item.id} className={`nav-link ${item.className}`}>
-                    {item.label}
-                  </span>
-                );
-              }
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Animated Letters Banner */}
-      <div
-        ref={lettersRef}
-        className="z-20 w-full mx-auto h-max pt-5 pb-3 mt-0 sm:mt-8 md:mt-12 group"
-      >
-        <div className="flex items-center justify-between w-full px-4 md:px-8 lg:px-12 xl:px-16">
-          {triggerxLetters.map((letterData, index) => (
-            <div
-              key={index}
-              className="letter relative cursor-pointer group flex-1 flex justify-center"
-              style={{
-                filter: "drop-shadow(0 0 10px rgba(130, 251, 208, 0.3))",
-              }}
-            >
-              <Image
-                src={letterData.src}
-                alt={letterData.letter}
-                width={100}
-                height={100}
-                className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 xl:w-50 xl:h-50 object-contain transition-all duration-300 group-hover:drop-shadow(0 0 20px rgba(130, 251, 208, 0.6))"
-              />
-
-              {/* Glow effect on hover */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{
-                  filter: "drop-shadow(0 0 15px rgba(130, 251, 208, 0.8))",
-                  transform: "scale(1.1)",
-                }}
-              ></div>
-            </div>
-          ))}
-        </div>
-
-        {/* <p className="text-[10px] xs:text-[12px] lg:text-[14px] 2xl:text-[15px] mt-4 mx-auto flex items-center justify-center text-gray-400 hover:text-[#82FBD0] transition-colors duration-300">
-          Build with ❤️ by{" "}
-          <a
-            href="https://lampros.tech/?utm_source=triggerx&utm_medium=footer"
-            target="_blank"
-            className="hover:underline ml-1.5 sm:ml-2 hover:text-[#F8FF7C] transition-colors duration-300"
+        {/* Bottom Section: Status/Build/Terms/Privacy Links (Left) & Copyright (Right) */}
+        <div className="z-50 w-full flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 px-4 md:px-8 lg:px-12 xl:px-16 py-6 bg-gradient-to-r from-black/20 via-black/10 to-black/20 backdrop-blur-sm border-t border-white/10 absolute bottom-0 left-0 right-0">
+          {/* Left: Status/Build/Terms/Privacy Links */}
+          <div
+            ref={mainNavRef}
+            className="flex flex-wrap justify-start items-center gap-4 md:gap-6 lg:gap-8 z-10"
           >
-            Lampros Tech
-          </a>
-        </p> */}
-      </div>
-    </footer>
+            {footerMainNavLinks.map((link, index) => (
+              <a
+                key={index}
+                href={link.href}
+                className={`main-nav-link text-white text-xs md:text-sm lg:text-base font-medium hover:text-[#F7FF7C] transition-all duration-300 relative group z-10`}
+                target={link.isExternal ? "_blank" : undefined}
+                rel={link.isExternal ? "noopener noreferrer" : undefined}
+              >
+                {link.text}
+                {/* Animated underline with gradient */}
+                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-[#C07AF6] to-[#FFF282] transition-all duration-300 group-hover:w-full"></div>
+
+                {/* External link indicator */}
+                {link.isExternal && (
+                  <span className="ml-1 text-xs opacity-60 group-hover:opacity-100 transition-opacity duration-300">
+                    ↗
+                  </span>
+                )}
+
+                {/* Hover glow effect */}
+                <div className="hover:text-white nav-underline absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-[#C07AF6] to-[#FFF282] w-0 transition-all duration-300"></div>
+              </a>
+            ))}
+          </div>
+
+          {/* Right: Copyright */}
+          <div className="flex-shrink-0 z-10">
+            <p className="text-[10px] xs:text-[12px] lg:text-[13px] 2xl:text-[15px] text-gray-400  transition-colors duration-300 whitespace-nowrap group cursor-pointer">
+              Build with ❤️ by{" "}
+              <a
+                href="https://lampros.tech/?utm_source=triggerx&utm_medium=footer"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline ml-1.5 sm:ml-2 hover:text-[#F8FF7C] transition-colors duration-300"
+              >
+                Lampros Tech
+              </a>
+            </p>
+          </div>
+        </div>
+      </footer>
+    </>
   );
 }
 
