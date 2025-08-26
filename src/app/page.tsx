@@ -6,41 +6,61 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import LoadingAnimation from "@/components/LoadingAnimation";
 import Section3 from "@/components/Section3";
+import { onLoadingComplete } from "@/components/LoadingAnimation";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
-    // Listen for the loading animation completion
-    const handleAnimationComplete = () => {
+    // Register callback for when loading completes
+    onLoadingComplete(() => {
+      console.log("Loading animation completed");
       setIsLoading(false);
+
       // Add a small delay before showing content for smooth transition
       setTimeout(() => {
         setShowContent(true);
-      }, 500);
-    };
-
-    // Add event listener for animation completion
-    window.addEventListener(
-      "loadingAnimationComplete",
-      handleAnimationComplete
-    );
-
-    return () => {
-      window.removeEventListener(
-        "loadingAnimationComplete",
-        handleAnimationComplete
-      );
-    };
+      }, 300);
+    });
   }, []);
 
   return (
     <>
-      <Section1 />
-      <Section2 />
-      {/* <Section3 /> */}
-      {/* <Footer /> */}
+      {/* Move Header outside the animated container */}
+
+      <div className="relative min-h-screen">
+        {/* Show loading animation while loading */}
+        {isLoading && <LoadingAnimation />}
+
+        {/* Show main content after loading with fade-in animation */}
+        {showContent && (
+          <div className="">
+            <main>
+              <Header />
+              <Section1 />
+              <Footer />
+            </main>
+          </div>
+        )}
+      </div>
+
+      <style jsx>{`
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.8s ease-out forwards;
+        }
+      `}</style>
     </>
   );
 }

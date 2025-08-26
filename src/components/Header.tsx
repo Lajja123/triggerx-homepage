@@ -249,9 +249,7 @@ export default function Header() {
     <header
       ref={headerRef}
       className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
-        isScrolled
-          ? "  bg-gradient-to-r from-black/20 via-black/10 to-black/20 backdrop-blur-xl shadow-2xl shadow-[#FFFFFF]/20"
-          : ""
+        isScrolled ? "bg-[#0a0a0a] shadow-2xl shadow-[#FFFFFF]/20" : ""
       }`}
     >
       <div className="relative z-10 w-full mx-auto px-4 sm:px-6 py-4 flex items-center justify-between ">

@@ -2,12 +2,6 @@
 import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-// Register ScrollTrigger plugin
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 // Import letter images
 const letters = [
@@ -21,19 +15,26 @@ const letters = [
   "/letters/x.png",
 ];
 
+// Global state for loading completion
+let loadingComplete = false;
+const loadingCallbacks: (() => void)[] = [];
+
+export const onLoadingComplete = (callback: () => void) => {
+  if (loadingComplete) {
+    callback();
+  } else {
+    loadingCallbacks.push(callback);
+  }
+};
+
 const LoadingAnimation = () => {
   const [isComplete, setIsComplete] = useState(false);
   const [isZoomedOut, setIsZoomedOut] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const lettersRef = useRef<(HTMLDivElement | null)[]>([]);
   const particlesRef = useRef<HTMLDivElement>(null);
-  const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
 
   useEffect(() => {
-    // Add loading classes to body and html
-    document.body.classList.add("loading-active");
-    document.documentElement.classList.add("loading-active");
-
     // Initialize GSAP
     gsap.set(lettersRef.current, {
       scale: 0,
@@ -44,20 +45,17 @@ const LoadingAnimation = () => {
     });
 
     // Create timeline for the entire animation
-    const tl = gsap.timeline({
+    const masterTimeline = gsap.timeline({
       onComplete: () => {
-        console.log(
-          "Initial letter animation completed, setting up scroll trigger"
-        );
-        setupScrollTrigger();
+        console.log("Master timeline completed");
       },
     });
 
     // Create particle effects
     createParticles();
 
-    // Staggered letter reveal with unique effects
-    tl.to(
+    // Phase 1: Letter reveal animation
+    masterTimeline.to(
       lettersRef.current,
       {
         scale: 1,
@@ -74,14 +72,14 @@ const LoadingAnimation = () => {
       0.5
     );
 
-    // Add floating animation to letters
+    // Add floating animation to letters (parallel)
     lettersRef.current.forEach((letter, index) => {
       if (letter) {
         gsap.to(letter, {
           y: -10,
           duration: 2,
           ease: "power2.inOut",
-          repeat: -1,
+          repeat: 3, // Limited repeats instead of infinite
           yoyo: true,
           delay: index * 0.1,
         });
@@ -89,18 +87,18 @@ const LoadingAnimation = () => {
     });
 
     // Add rotation effects to specific letters
-    tl.to(
+    masterTimeline.to(
       lettersRef.current[2],
       {
         // 'i' letter
         rotation: 360,
-        duration: 0.5,
+        duration: 1.5,
         ease: "power2.out",
       },
       2
     );
 
-    tl.to(
+    masterTimeline.to(
       lettersRef.current[6],
       {
         // 'r' letter
@@ -111,141 +109,39 @@ const LoadingAnimation = () => {
       2.2
     );
 
-    // Add scale pulse to X letter
-    tl.to(
+    // Add scale pulse to X letter (limited duration)
+    masterTimeline.to(
       lettersRef.current[7],
       {
         // 'x' letter
         scale: 1.1,
         duration: 0.8,
         ease: "power2.inOut",
-        repeat: -1,
+        repeat: 3, // Limited repeats
         yoyo: true,
       },
       3
     );
 
+    // Phase 2: Automatic transition to zoom out after 4 seconds
+    masterTimeline.call(
+      () => {
+        triggerZoomOut();
+      },
+      [],
+      4
+    ); // Start zoom out after 6 seconds
+
     return () => {
-      tl.kill();
-      if (scrollTriggerRef.current) {
-        scrollTriggerRef.current.kill();
-      }
+      masterTimeline.kill();
     };
   }, []);
 
-  const setupScrollTrigger = () => {
-    console.log("Setting up GSAP ScrollTrigger...");
-
-    // Create a scrollable container if needed
-    const scrollContainer = document.createElement("div");
-    scrollContainer.id = "scroll-trigger-container";
-    scrollContainer.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 200vh;
-      pointer-events: none;
-      z-index: -1;
-    `;
-    document.body.appendChild(scrollContainer);
-
-    // Create ScrollTrigger for the zoom out animation
-    scrollTriggerRef.current = ScrollTrigger.create({
-      trigger: scrollContainer,
-      start: "top top",
-      end: "bottom bottom",
-      scrub: 1,
-      onUpdate: (self) => {
-        const progress = self.progress;
-        console.log("Scroll progress:", progress);
-
-        // Trigger zoom out when scroll progress reaches 0.1 (10%)
-        if (progress > 0.1 && !isZoomedOut) {
-          console.log("Scroll threshold reached, triggering zoom out");
-          triggerZoomOut();
-        }
-      },
-      onEnter: () => {
-        console.log("ScrollTrigger entered");
-      },
-      onLeave: () => {
-        console.log("ScrollTrigger left");
-      },
-      onEnterBack: () => {
-        console.log("ScrollTrigger entered back");
-      },
-      onLeaveBack: () => {
-        console.log("ScrollTrigger left back");
-      },
-    });
-
-    // Alternative trigger using wheel events with GSAP
-    const wheelTrigger = ScrollTrigger.create({
-      trigger: "body",
-      start: "top top",
-      end: "bottom bottom",
-      onUpdate: (self) => {
-        // This will trigger on any scroll movement
-        if (!isZoomedOut) {
-          console.log("Wheel scroll detected, triggering zoom out");
-          triggerZoomOut();
-        }
-      },
-      onEnter: () => {
-        if (!isZoomedOut) {
-          console.log("Wheel trigger entered, triggering zoom out");
-          triggerZoomOut();
-        }
-      },
-    });
-
-    // Auto-trigger after 5 seconds if no scroll interaction
-    setTimeout(() => {
-      if (!isZoomedOut) {
-        console.log("Auto-triggering after timeout");
-        triggerZoomOut();
-      }
-    }, 5000);
-
-    // Cleanup function
-    return () => {
-      if (scrollTriggerRef.current) {
-        scrollTriggerRef.current.kill();
-      }
-      if (wheelTrigger) {
-        wheelTrigger.kill();
-      }
-      const container = document.getElementById("scroll-trigger-container");
-      if (container && container.parentNode) {
-        container.parentNode.removeChild(container);
-      }
-    };
-  };
-
   const triggerZoomOut = () => {
-    console.log("triggerZoomOut called, isZoomedOut:", isZoomedOut);
     if (isZoomedOut) return;
 
-    console.log("Starting X letter zoom out animation");
+    console.log("Starting automatic zoom out");
     setIsZoomedOut(true);
-
-    // Clean up ScrollTrigger
-    if (scrollTriggerRef.current) {
-      scrollTriggerRef.current.kill();
-      scrollTriggerRef.current = null;
-    }
-
-    // Clean up scroll trigger container
-    const scrollContainer = document.getElementById("scroll-trigger-container");
-    if (scrollContainer && scrollContainer.parentNode) {
-      scrollContainer.parentNode.removeChild(scrollContainer);
-    }
-
-    // Remove loading classes
-    document.body.classList.remove("loading-active");
-    document.documentElement.classList.remove("loading-active");
-    console.log("Removed loading classes");
 
     // Quick removal of all letters except X
     lettersRef.current.forEach((letter, index) => {
@@ -254,9 +150,9 @@ const LoadingAnimation = () => {
         gsap.to(letter, {
           opacity: 0,
           scale: 0,
-          duration: 0.8,
+          duration: 0.5,
           ease: "power2.inOut",
-          delay: index * 0.05,
+          delay: index * 0.01,
         });
       }
     });
@@ -290,7 +186,7 @@ const LoadingAnimation = () => {
         scale: maxScale * 0.5,
         duration: 1.5,
         ease: "power2.inOut",
-        delay: 0.5,
+        delay: 0.2,
       });
 
       // Phase 2: Full zoom with glow effect
@@ -329,12 +225,24 @@ const LoadingAnimation = () => {
 
       // Add particle trail effect for X
       createParticleTrail(xLetter, moveX, moveY, maxScale);
-
-      // Dispatch completion event when animation finishes
-      tl.call(() => {
-        window.dispatchEvent(new CustomEvent("loadingAnimationComplete"));
-      });
     }
+
+    // After X completes its animation, fade out container
+    gsap.to(containerRef.current, {
+      opacity: 0,
+      scale: 1.1,
+      duration: 1,
+      ease: "power2.inOut",
+      delay: 2.5, // Wait for X's animation to complete
+      onComplete: () => {
+        setIsComplete(true);
+        loadingComplete = true;
+        console.log("Loading animation completed");
+        // Notify all waiting callbacks
+        loadingCallbacks.forEach((callback) => callback());
+        loadingCallbacks.length = 0;
+      },
+    });
   };
 
   const createParticles = () => {
@@ -348,7 +256,7 @@ const LoadingAnimation = () => {
       particle.style.top = Math.random() * 100 + "%";
       particlesRef.current.appendChild(particle);
 
-      // Animate particles
+      // Animate particles with limited duration
       gsap.to(particle, {
         x: (Math.random() - 0.5) * 200,
         y: (Math.random() - 0.5) * 200,
@@ -356,7 +264,7 @@ const LoadingAnimation = () => {
         scale: 0,
         duration: 3 + Math.random() * 2,
         ease: "power2.out",
-        repeat: -1,
+        repeat: 2, // Limited repeats instead of infinite
         delay: Math.random() * 2,
       });
     }
@@ -400,9 +308,7 @@ const LoadingAnimation = () => {
     <div
       ref={containerRef}
       className={`absolute inset-0 flex items-center justify-center transition-all duration-1000 ease-in-out ${
-        isComplete
-          ? "opacity-0 pointer-events-none"
-          : "opacity-100 pointer-events-auto"
+        isComplete ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
       style={{ zIndex: 50 }}
     >
@@ -446,18 +352,6 @@ const LoadingAnimation = () => {
           </div>
         ))}
       </div>
-
-      {/* Scroll indicator */}
-      {!isZoomedOut && (
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-4">
-          <div className="text-white/60 text-sm animate-pulse text-center">
-            Scroll to trigger X letter animation
-          </div>
-          <div className="text-white/40 text-xs text-center">
-            (Use mouse wheel or touch to scroll)
-          </div>
-        </div>
-      )}
     </div>
   );
 };

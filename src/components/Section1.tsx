@@ -15,47 +15,23 @@ if (typeof window !== "undefined") {
 export default function Section1() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [typewriterText, setTypewriterText] = useState("");
+  const [typewriterIndex, setTypewriterIndex] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const headlineRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
-  const floatingElementsRef = useRef<HTMLDivElement>(null);
-  const particlesRef = useRef<HTMLDivElement>(null);
   const button1Ref = useRef<HTMLDivElement>(null);
   const button2Ref = useRef<HTMLDivElement>(null);
+  const poweredRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // GSAP Text Animation - Split text and animate each character
-      const headlineElement = headlineRef.current;
-      if (headlineElement) {
-        // Split text into individual characters
-        const textElements = headlineElement.querySelectorAll(".text-char");
-        textElements.forEach((char, index) => {
-          gsap.fromTo(
-            char,
-            {
-              opacity: 0,
-              y: 50,
-              rotationX: 90,
-              scale: 0.5,
-            },
-            {
-              opacity: 1,
-              y: 0,
-              rotationX: 0,
-              scale: 1,
-              duration: 0.8,
-              delay: index * 0.05,
-              ease: "back.out(1.7)",
-              scrollTrigger: {
-                trigger: headlineElement,
-                start: "top 80%",
-                end: "bottom 20%",
-                toggleActions: "play none none reverse",
-              },
-            }
-          );
-        });
+      const poweredElement = poweredRef.current;
+      if (poweredElement) {
+        gsap.fromTo(
+          poweredElement,
+          { opacity: 0, y: 50 },
+          { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
+        );
       }
 
       // CTA buttons with enhanced animations
@@ -81,45 +57,7 @@ export default function Section1() {
         );
       }
 
-      // Particle system animation
-      const particles = sectionRef.current?.querySelectorAll(".particle");
-      particles?.forEach((particle, index) => {
-        gsap.to(particle, {
-          y: -200,
-          x: Math.random() * 400 - 200,
-          opacity: 0,
-          duration: 5 + Math.random() * 3,
-          repeat: -1,
-          delay: index * 0.1,
-          ease: "power1.out",
-        });
-      });
-
       // Progress indicator
-      const progressBar = sectionRef.current?.querySelector(".progress-bar");
-      if (progressBar) {
-        gsap.to(progressBar, {
-          width: "100%",
-          duration: 2,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top center",
-            end: "bottom center",
-            scrub: true,
-          },
-        });
-      }
-
-      // Mouse follower animation
-      const mouseFollower =
-        sectionRef.current?.querySelector(".mouse-follower");
-      if (mouseFollower) {
-        gsap.set(mouseFollower, {
-          x: mousePosition.x,
-          y: mousePosition.y,
-        });
-      }
 
       // Animated "i" letter in "Automation"
       const animatedI = sectionRef.current?.querySelectorAll(".animated-i");
@@ -200,6 +138,29 @@ export default function Section1() {
 
     return () => ctx.revert();
   }, []);
+
+  // Typewriter effect for EIGENLAYER text - Infinite loop
+  useEffect(() => {
+    const targetText = "EIGENLAYER";
+    const typewriterSpeed = 150; // milliseconds per character
+
+    if (typewriterIndex < targetText.length) {
+      const timer = setTimeout(() => {
+        setTypewriterText(targetText.slice(0, typewriterIndex + 1));
+        setTypewriterIndex(typewriterIndex + 1);
+      }, typewriterSpeed);
+
+      return () => clearTimeout(timer);
+    } else {
+      // Reset to start the loop again after a pause
+      const resetTimer = setTimeout(() => {
+        setTypewriterText("");
+        setTypewriterIndex(0);
+      }, 2000); // 2 second pause before restarting
+
+      return () => clearTimeout(resetTimer);
+    }
+  }, [typewriterIndex]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     setMousePosition({ x: e.clientX, y: e.clientY });
@@ -290,16 +251,7 @@ export default function Section1() {
     >
       {/* Mouse follower removed - now handled globally */}
 
-      {/* Sticky Left Corner Element - Enhanced */}
-      <div className="fixed left-0 top-0 h-full z-40">
-        <div className="h-full w-16  flex flex-row items-center justify-center group cursor-pointer ">
-          <div className="transform -rotate-90 text-white text-sm font-medium tracking-wider group-hover:text-[#c07af6] transition-colors duration-300">
-            <span className="block text-xs opacity-70 mb-2">POWERED BY</span>
-            <span className="block text-lg font-bold">EIGENLAYER</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-[#8ab4ff]/20 to-[#fbf197]/20 blur-xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </div>
-        </div>
-      </div>
+      {/* Removed fixed left corner element - will be placed above buttons instead */}
 
       {/* Dynamic Background Gradient */}
       <div
@@ -323,10 +275,7 @@ export default function Section1() {
 
       <section className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 md:px-8 lg:px-12 pt-8 sm:pt-12 md:pt-16">
         {/* Main Headline - Enhanced with GSAP text animation */}
-        <div
-          ref={headlineRef}
-          className="text-center mb-8 sm:mb-10 md:mb-12 px-2 sm:px-4 relative"
-        >
+        <div className="text-center mb-8 sm:mb-10 md:mb-12 px-2 sm:px-4 relative">
           {/* Main text layer */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold text-white leading-tight tracking-tight relative z-10">
             <span className="block tracking-wide mb-2 sm:mb-3">
@@ -387,6 +336,30 @@ export default function Section1() {
           </h1>
         </div>
 
+        {/* Powered By Section - Enhanced branding above CTA */}
+        <div
+          ref={poweredRef}
+          className="text-center mb-6 sm:mb-8 group cursor-pointer"
+        >
+          <div className="inline-flex items-center space-x-2 relative">
+            <span className="text-[#A2A2A2] text-lg sm:text-xl  ">{"{"}</span>
+            <div className="flex flex-col items-center space-y-1">
+              <span className="text-lg sm:text-xl  text-white ">
+                POWERED BY{" "}
+                <span className="typewriter-text font-bold inline-block bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
+                  {typewriterText}
+                  <span className="animate-pulse text-white">|</span>
+                </span>
+              </span>
+            </div>
+            <span className="text-[#A2A2A2] text-lg sm:text-xl  group-hover:text-[#c07af6] transition-colors duration-300">
+              {"}"}
+            </span>
+            {/* Glow effect on hover */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#8ab4ff]/20 to-[#fbf197]/20 blur-xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </div>
+        </div>
+
         {/* CTA Buttons - Enhanced with interactive effects */}
         <div
           ref={ctaRef}
@@ -406,7 +379,6 @@ export default function Section1() {
             >
               <Button color="white">Start Building</Button>
             </AnimatedButton>
-            <div className="absolute inset-0 bg-gradient-to-r from-[#8ab4ff]/20 to-[#fbf197]/20 blur-xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </div>
 
           <div
@@ -423,7 +395,6 @@ export default function Section1() {
             >
               <Button color="white"> Let&apos;s talk</Button>
             </AnimatedButton>
-            <div className="absolute inset-0 bg-gradient-to-r from-[#fff282]/20 to-[#82fbd0]/20 blur-xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </div>
         </div>
 

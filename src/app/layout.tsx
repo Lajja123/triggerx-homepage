@@ -18,12 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="relative min-h-screen">
-        {/* <MouseFollower /> */}
-        <Header />
-        {children}
-        <Footer />
-      </body>
+      <body className="relative min-h-screen overflow-hidden">{children}</body>
     </html>
   );
 }
