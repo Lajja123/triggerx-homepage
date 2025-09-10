@@ -39,6 +39,7 @@ export default function Home() {
             <main>
               <Header />
               <Section1 />
+              <Section2 />
               <Footer />
             </main>
           </div>

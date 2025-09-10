@@ -1,8 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import AnimatedButton from "@/components/ui/AnimatedButton";
-import eigenlayer from "../assets/HeaderHerosection svgs/Eigenlayer.svg";
-import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Button } from "./ui/Typography";
@@ -14,14 +12,15 @@ if (typeof window !== "undefined") {
 
 export default function Section1() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
   const [typewriterText, setTypewriterText] = useState("");
   const [typewriterIndex, setTypewriterIndex] = useState(0);
+  const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   const sectionRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const button1Ref = useRef<HTMLDivElement>(null);
   const button2Ref = useRef<HTMLDivElement>(null);
   const poweredRef = useRef<HTMLDivElement>(null);
+  const sec1Ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -29,6 +28,15 @@ export default function Section1() {
       if (poweredElement) {
         gsap.fromTo(
           poweredElement,
+          { opacity: 0, y: 50 },
+          { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
+        );
+      }
+      const sec1Element = sec1Ref.current;
+
+      if (sec1Element) {
+        gsap.fromTo(
+          sec1Element,
           { opacity: 0, y: 50 },
           { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
         );
@@ -58,85 +66,28 @@ export default function Section1() {
       }
 
       // Progress indicator
-
-      // Animated "i" letter in "Automation"
-      const animatedI = sectionRef.current?.querySelectorAll(".animated-i");
-      animatedI?.forEach((letter) => {
-        // Create a timeline for the animation
-        const tl = gsap.timeline({ repeat: -1, delay: 2 });
-
-        // First rotation cycle
-        tl.to(letter, {
-          rotationX: 180,
-          scale: 1.2,
-          duration: 0.6,
-          ease: "power2.inOut",
-        })
-          .to(
-            letter,
-            {
-              innerHTML: "!",
-              duration: 0,
-            },
-            "-=0.3"
-          )
-          .to(letter, {
-            rotationX: 360,
-            scale: 1,
-            duration: 0.6,
-            ease: "power2.inOut",
-          })
-          .to(
-            letter,
-            {
-              innerHTML: "i",
-              duration: 0,
-            },
-            "-=0.3"
-          )
-          // Pause when showing "i"
-          .to(letter, {
-            duration: 2.5,
-            ease: "none",
-          })
-          // Second rotation cycle
-          .to(letter, {
-            rotationX: 540,
-            scale: 1.2,
-            duration: 0.6,
-            ease: "power2.inOut",
-          })
-          .to(
-            letter,
-            {
-              innerHTML: "!",
-              duration: 0,
-            },
-            "-=0.3"
-          )
-          .to(letter, {
-            rotationX: 720,
-            scale: 1,
-            duration: 0.6,
-            ease: "power2.inOut",
-          })
-          .to(
-            letter,
-            {
-              innerHTML: "i",
-              duration: 0,
-            },
-            "-=0.3"
-          )
-          // Pause when showing "i" again
-          .to(letter, {
-            duration: 2.5,
-            ease: "none",
-          });
-      });
     }, sectionRef);
 
     return () => ctx.revert();
+  }, []);
+
+  // Scroll detection to hide scroll indicator
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      if (scrollY > 50) {
+        // Hide after scrolling 50px
+        setShowScrollIndicator(false);
+      } else {
+        setShowScrollIndicator(true);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   // Typewriter effect for EIGENLAYER text - Infinite loop
@@ -180,12 +131,10 @@ export default function Section1() {
   };
 
   const handleMouseEnter = () => {
-    setIsHovering(true);
-
     // Animate floating elements on hover
     const floatingElements =
       sectionRef.current?.querySelectorAll(".floating-element");
-    floatingElements?.forEach((el, index) => {
+    floatingElements?.forEach((el) => {
       gsap.to(el, {
         scale: 1.2,
         duration: 0.5,
@@ -195,8 +144,6 @@ export default function Section1() {
   };
 
   const handleMouseLeave = () => {
-    setIsHovering(false);
-
     // Reset floating elements
     const floatingElements =
       sectionRef.current?.querySelectorAll(".floating-element");
@@ -277,7 +224,10 @@ export default function Section1() {
         {/* Main Headline - Enhanced with GSAP text animation */}
         <div className="text-center mb-8 sm:mb-10 md:mb-12 px-2 sm:px-4 relative">
           {/* Main text layer */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold text-white leading-tight tracking-tight relative z-10">
+          <h1
+            ref={sec1Ref}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold text-white leading-tight tracking-tight relative z-10"
+          >
             <span className="block tracking-wide mb-2 sm:mb-3">
               {"Effortless Blockchain".split("").map((char, index) => (
                 <span key={index} className="text-char inline-block">
@@ -286,45 +236,9 @@ export default function Section1() {
               ))}
             </span>
             <span className="block tracking-wide">
-              {"Automation".split("").map((char, index) => (
-                <span key={index} className="text-char inline-block">
-                  {char === "A" ? (
-                    <span className="bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
-                      {char}
-                    </span>
-                  ) : char === "u" ? (
-                    <span className="bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
-                      {char}
-                    </span>
-                  ) : char === "t" ? (
-                    <span className="bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
-                      {char}
-                    </span>
-                  ) : char === "o" ? (
-                    <span className="bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
-                      {char}
-                    </span>
-                  ) : char === "m" ? (
-                    <span className="bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
-                      {char}
-                    </span>
-                  ) : char === "a" ? (
-                    <span className="bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
-                      {char}
-                    </span>
-                  ) : char === "i" ? (
-                    <span className="animated-i inline-block bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
-                      {char}
-                    </span>
-                  ) : char === "n" ? (
-                    <span className="bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
-                      {char}
-                    </span>
-                  ) : (
-                    char
-                  )}
-                </span>
-              ))}
+              <span className="bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
+                Automation
+              </span>
             </span>
             <span className="block tracking-wide mt-4">
               {".Limitless Potential.".split("").map((char, index) => (
@@ -399,30 +313,32 @@ export default function Section1() {
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 text-[#A2A2A2] text-sm group cursor-pointer">
-          <span className="group-hover:text-white transition-colors duration-300">
-            Scroll to explore
-          </span>
-          <div className="relative">
-            <svg
-              className="w-6 h-6 group-hover:scale-110 transition-transform duration-300 animate-bounce"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 14l-7 7m0 0l-7-7m7 7V3"
-              />
-            </svg>
-            {/* Glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#c07af6]/20 to-[#fbf197]/20 blur-lg scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        {showScrollIndicator && (
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 text-[#A2A2A2] text-sm group cursor-pointer transition-opacity duration-500">
+            <span className="group-hover:text-white transition-colors duration-300">
+              Scroll to explore
+            </span>
+            <div className="relative">
+              <svg
+                className="w-6 h-6 group-hover:scale-110 transition-transform duration-300 animate-bounce"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                />
+              </svg>
+              {/* Glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#c07af6]/20 to-[#fbf197]/20 blur-lg scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </div>
+            {/* Progress line */}
+            <div className="w-px h-8 bg-gradient-to-b from-[#A2A2A2] to-transparent group-hover:from-white transition-colors duration-300"></div>
           </div>
-          {/* Progress line */}
-          <div className="w-px h-8 bg-gradient-to-b from-[#A2A2A2] to-transparent group-hover:from-white transition-colors duration-300"></div>
-        </div>
+        )}
       </section>
     </div>
   );

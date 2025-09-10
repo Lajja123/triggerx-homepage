@@ -109,20 +109,6 @@ const LoadingAnimation = () => {
       2.2
     );
 
-    // Add scale pulse to X letter (limited duration)
-    masterTimeline.to(
-      lettersRef.current[7],
-      {
-        // 'x' letter
-        scale: 1.1,
-        duration: 0.8,
-        ease: "power2.inOut",
-        repeat: 3, // Limited repeats
-        yoyo: true,
-      },
-      3
-    );
-
     // Phase 2: Automatic transition to zoom out after 4 seconds
     masterTimeline.call(
       () => {
@@ -130,7 +116,7 @@ const LoadingAnimation = () => {
       },
       [],
       4
-    ); // Start zoom out after 6 seconds
+    ); // Start zoom out after 4 seconds
 
     return () => {
       masterTimeline.kill();
@@ -143,10 +129,9 @@ const LoadingAnimation = () => {
     console.log("Starting automatic zoom out");
     setIsZoomedOut(true);
 
-    // Quick removal of all letters except X
+    // Remove all letters
     lettersRef.current.forEach((letter, index) => {
-      if (letter && index !== 7) {
-        // Keep X letter (index 7)
+      if (letter) {
         gsap.to(letter, {
           opacity: 0,
           scale: 0,
@@ -157,83 +142,13 @@ const LoadingAnimation = () => {
       }
     });
 
-    // Smooth transition for X letter
-    const xLetter = lettersRef.current[7];
-    if (xLetter) {
-      // Calculate the scale needed for X
-      const screenWidth = window.innerWidth;
-      const screenHeight = window.innerHeight;
-      const letterRect = xLetter.getBoundingClientRect();
-      const scaleX = screenWidth / letterRect.width;
-      const scaleY = screenHeight / letterRect.height;
-      const maxScale = Math.max(scaleX, scaleY) * 0.4;
-
-      // Move X to center of screen
-      const centerX = screenWidth / 2 - letterRect.width / 2;
-      const centerY = screenHeight / 2 - letterRect.height / 2;
-      const currentX = letterRect.left;
-      const currentY = letterRect.top;
-      const moveX = centerX - currentX;
-      const moveY = centerY - currentY;
-
-      // Smooth animation for X
-      const tl = gsap.timeline();
-
-      // Phase 1: Move to center and start zoom
-      tl.to(xLetter, {
-        x: moveX,
-        y: moveY,
-        scale: maxScale * 0.5,
-        duration: 1.5,
-        ease: "power2.inOut",
-        delay: 0.2,
-      });
-
-      // Phase 2: Full zoom with glow effect
-      tl.to(
-        xLetter,
-        {
-          scale: maxScale,
-          duration: 2,
-          ease: "power2.out",
-        },
-        "-=1"
-      );
-
-      // Phase 3: Add rotation
-      tl.to(
-        xLetter,
-        {
-          rotation: 360,
-          duration: 2.5,
-          ease: "power2.inOut",
-        },
-        "-=2"
-      );
-
-      // Phase 4: Fade out
-      tl.to(
-        xLetter,
-        {
-          opacity: 0,
-          scale: maxScale * 1.1,
-          duration: 1.5,
-          ease: "power2.inOut",
-        },
-        "-=1"
-      );
-
-      // Add particle trail effect for X
-      createParticleTrail(xLetter, moveX, moveY, maxScale);
-    }
-
-    // After X completes its animation, fade out container
+    // After letters fade out, fade out container
     gsap.to(containerRef.current, {
       opacity: 0,
       scale: 1.1,
-      duration: 1,
+      duration: 0,
       ease: "power2.inOut",
-      delay: 2.5, // Wait for X's animation to complete
+      delay: 1, // Wait for letters to fade out
       onComplete: () => {
         setIsComplete(true);
         loadingComplete = true;
@@ -270,40 +185,6 @@ const LoadingAnimation = () => {
     }
   };
 
-  // Enhanced particle trail effect
-  const createParticleTrail = (
-    targetElement: HTMLElement,
-    moveX: number,
-    moveY: number,
-    maxScale: number
-  ) => {
-    if (!particlesRef.current) return;
-
-    const rect = targetElement.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    // Create multiple particle trails
-    for (let i = 0; i < 8; i++) {
-      const particle = document.createElement("div");
-      particle.className = "absolute w-1 h-1 bg-white rounded-full opacity-80";
-      particle.style.left = centerX + "px";
-      particle.style.top = centerY + "px";
-      particlesRef.current.appendChild(particle);
-
-      // Animate particles following the zoom path
-      gsap.to(particle, {
-        x: moveX + (Math.random() - 0.5) * 100,
-        y: moveY + (Math.random() - 0.5) * 100,
-        scale: maxScale * 0.1,
-        opacity: 0,
-        duration: 2 + Math.random(),
-        ease: "power2.out",
-        delay: Math.random() * 0.5,
-      });
-    }
-  };
-
   return (
     <div
       ref={containerRef}
@@ -333,7 +214,7 @@ const LoadingAnimation = () => {
             style={{
               width: "auto",
               height: "100%",
-              zIndex: index === 7 ? 10 : 1, // X letter in front
+              zIndex: 1, // All letters have same z-index now
               transform: "scale(0) rotate(180deg) translateY(100px)",
               transformOrigin: "center center",
             }}
