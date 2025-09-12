@@ -14,7 +14,6 @@ if (typeof window !== "undefined") {
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [activeLink, setActiveLink] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navLinksRef = useRef<HTMLDivElement>(null);
   const mobileNavRef = useRef<HTMLDivElement>(null);
@@ -135,41 +134,12 @@ export default function Header() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Enhanced logo animations
-      const logoLetters = logoRef.current?.querySelectorAll("img");
-      if (logoLetters) {
-        // Enhanced hover animations for individual letters
-        logoLetters.forEach((letter) => {
-          letter.addEventListener("mouseenter", () => {
-            gsap.to(letter, {
-              y: -10,
-              rotation: 10,
-              scale: 1.3,
-              duration: 0.4,
-              ease: "back.out(1.3)",
-            });
-          });
-
-          letter.addEventListener("mouseleave", () => {
-            gsap.to(logoLetters, {
-              y: 0,
-              rotation: 0,
-              scale: 1,
-              duration: 0.5,
-              ease: "power2.out",
-            });
-          });
-        });
-      }
-
       // Enhanced navigation link animations
       const navLinks = navLinksRef.current?.querySelectorAll("a");
       if (navLinks) {
-        navLinks.forEach((link, index) => {
+        navLinks.forEach((link) => {
           // Enhanced hover animations
           link.addEventListener("mouseenter", () => {
-            setActiveLink(link.textContent);
-
             gsap.to(link, {
               scale: 1.1,
               duration: 0.3,
@@ -200,8 +170,6 @@ export default function Header() {
           });
 
           link.addEventListener("mouseleave", () => {
-            setActiveLink(null);
-
             gsap.to(link, {
               scale: 1,
               duration: 0.3,
@@ -237,12 +205,12 @@ export default function Header() {
     return () => ctx.revert();
   }, [isScrolled]);
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
   const handleMobileLinkClick = () => {
     setIsMobileMenuOpen(false);
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
@@ -255,21 +223,15 @@ export default function Header() {
       <div className="relative z-10 w-full mx-auto px-4 sm:px-6 py-4 flex items-center justify-between ">
         <div className="flex gap-8 lg:gap-16 items-center">
           {/* Enhanced Logo */}
-          <Link href="/" className="flex items-center space-x-1 group">
-            <div
-              ref={logoRef}
-              className="flex items-center space-x-0.5 sm:space-x-1 relative"
-            >
-              {["t", "r", "i", "g", "g", "e", "r", "x"].map((letter, index) => (
-                <Image
-                  key={index}
-                  src={`/letters/${letter}.png`}
-                  alt={letter.toUpperCase()}
-                  width={28}
-                  height={28}
-                  className="cursor-pointer transition-all duration-300 hover:scale-110 w-5 h-5 sm:w-7 sm:h-7"
-                />
-              ))}
+          <Link href="/" className="flex items-center group">
+            <div ref={logoRef} className="flex items-center relative">
+              <Image
+                src="/logo.svg"
+                alt="TriggerX Logo"
+                width={230}
+                height={27}
+                className="h-5 sm:h-7 w-auto"
+              />
             </div>
           </Link>
 
@@ -283,7 +245,7 @@ export default function Header() {
               >
                 <Typography variant="body" className="relative text-white">
                   {link.text}
-                  <div className="hover:text-white nav-underline absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-[#C07AF6] to-[#FFF282] w-0 transition-all duration-300"></div>
+                  <div className="hover:text-white nav-underline absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-[#82FBD0] to-[#fbf197] w-0 transition-all duration-300"></div>
                 </Typography>
               </Link>
             ))}
@@ -291,7 +253,6 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          {/* Desktop CTA Button */}
           <div className="hidden lg:block cta-button relative group">
             <AnimatedButton
               href="#"
@@ -303,7 +264,6 @@ export default function Header() {
             </AnimatedButton>
           </div>
 
-          {/* Mobile menu button */}
           <button
             ref={mobileMenuButtonRef}
             onClick={toggleMobileMenu}
@@ -312,19 +272,19 @@ export default function Header() {
           >
             <div className="relative w-6 h-4 flex flex-col justify-center">
               <div
-                className={`absolute w-6 h-0.5 bg-[#C07AF6] transition-all duration-300  ${
+                className={`absolute w-6 h-0.5 bg-[#fff282] transition-all duration-300  ${
                   isMobileMenuOpen ? "rotate-45 top-1.5" : "top-0"
                 }`}
               ></div>
               <div
-                className={`absolute w-6 h-0.5 bg-[#C07AF6] transition-all duration-300  top-1.5 ${
+                className={`absolute w-6 h-0.5 bg-[#fff282] transition-all duration-300  top-1.5 ${
                   isMobileMenuOpen
                     ? "opacity-0 scale-0"
                     : "opacity-100 scale-100"
                 }`}
               ></div>
               <div
-                className={`absolute w-6 h-0.5 bg-[#C07AF6] transition-all duration-300  ${
+                className={`absolute w-6 h-0.5 bg-[#fff282] transition-all duration-300  ${
                   isMobileMenuOpen ? "-rotate-45 top-1.5" : "top-3"
                 }`}
               ></div>
@@ -336,7 +296,7 @@ export default function Header() {
       {/* Mobile Navigation Menu */}
       <div
         ref={mobileNavRef}
-        className="lg:hidden fixed left-0 right-0 bg-black/95 border-b border-white/10 z-[90]"
+        className="lg:hidden fixed left-0 right-0 bg-[#141414]border-b border-white/10 z-[90]"
         style={{
           display: "none",
           top: `${headerRef.current?.offsetHeight || 80}px`,

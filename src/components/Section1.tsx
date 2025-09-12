@@ -15,6 +15,7 @@ export default function Section1() {
   const [typewriterText, setTypewriterText] = useState("");
   const [typewriterIndex, setTypewriterIndex] = useState(0);
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const button1Ref = useRef<HTMLDivElement>(null);
@@ -23,6 +24,12 @@ export default function Section1() {
   const sec1Ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Track small screens to tone down animations/interactions
+    const mq = window.matchMedia("(max-width: 639px)");
+    const update = () => setIsSmallScreen(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+
     const ctx = gsap.context(() => {
       const poweredElement = poweredRef.current;
       if (poweredElement) {
@@ -68,7 +75,10 @@ export default function Section1() {
       // Progress indicator
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      mq.removeEventListener("change", update);
+    };
   }, []);
 
   // Scroll detection to hide scroll indicator
@@ -114,6 +124,7 @@ export default function Section1() {
   }, [typewriterIndex]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
+    if (isSmallScreen) return;
     setMousePosition({ x: e.clientX, y: e.clientY });
 
     // Update mouse follower position
@@ -131,6 +142,7 @@ export default function Section1() {
   };
 
   const handleMouseEnter = () => {
+    if (isSmallScreen) return;
     // Animate floating elements on hover
     const floatingElements =
       sectionRef.current?.querySelectorAll(".floating-element");
@@ -144,6 +156,7 @@ export default function Section1() {
   };
 
   const handleMouseLeave = () => {
+    if (isSmallScreen) return;
     // Reset floating elements
     const floatingElements =
       sectionRef.current?.querySelectorAll(".floating-element");
@@ -220,13 +233,13 @@ export default function Section1() {
         }}
       />
 
-      <section className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 md:px-8 lg:px-12 pt-8 sm:pt-12 md:pt-16">
+      <section className="relative z-10 flex flex-col items-center justify-center min-h-[85vh] sm:min-h-screen px-3 sm:px-6 md:px-8 lg:px-12 pt-6 sm:pt-12 md:pt-16 max-w-[1200px] mx-auto">
         {/* Main Headline - Enhanced with GSAP text animation */}
-        <div className="text-center mb-8 sm:mb-10 md:mb-12 px-2 sm:px-4 relative">
+        <div className="text-center mb-6 sm:mb-10 md:mb-12 px-1 sm:px-4 relative max-w-[92%] sm:max-w-[85%] mx-auto">
           {/* Main text layer */}
           <h1
             ref={sec1Ref}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold text-white leading-tight tracking-tight relative z-10"
+            className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-7xl font-bold text-white leading-[1.15] sm:leading-tight tracking-tight relative z-10"
           >
             <span className="block tracking-wide mb-2 sm:mb-3">
               {"Effortless Blockchain".split("").map((char, index) => (
@@ -235,12 +248,12 @@ export default function Section1() {
                 </span>
               ))}
             </span>
-            <span className="block tracking-wide">
+            <span className="block tracking-wide mt-1 sm:mt-0">
               <span className="bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
                 Automation
               </span>
             </span>
-            <span className="block tracking-wide mt-4">
+            <span className="block tracking-wide mt-3 sm:mt-4">
               {".Limitless Potential.".split("").map((char, index) => (
                 <span key={index} className="text-char inline-block">
                   {char === " " ? "\u00A0" : char}
@@ -253,12 +266,12 @@ export default function Section1() {
         {/* Powered By Section - Enhanced branding above CTA */}
         <div
           ref={poweredRef}
-          className="text-center mb-6 sm:mb-8 group cursor-pointer"
+          className="text-center mb-5 sm:mb-8 group cursor-pointer"
         >
           <div className="inline-flex items-center space-x-2 relative">
-            <span className="text-[#A2A2A2] text-lg sm:text-xl  ">{"{"}</span>
+            <span className="text-[#A2A2A2] text-base sm:text-xl  ">{"{"}</span>
             <div className="flex flex-col items-center space-y-1">
-              <span className="text-lg sm:text-xl  text-white ">
+              <span className="text-base sm:text-xl  text-white ">
                 POWERED BY{" "}
                 <span className="typewriter-text font-bold inline-block bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
                   {typewriterText}
@@ -266,7 +279,7 @@ export default function Section1() {
                 </span>
               </span>
             </div>
-            <span className="text-[#A2A2A2] text-lg sm:text-xl   transition-colors duration-300">
+            <span className="text-[#A2A2A2] text-base sm:text-xl   transition-colors duration-300">
               {"}"}
             </span>
             {/* Glow effect on hover */}
@@ -277,7 +290,7 @@ export default function Section1() {
         {/* CTA Buttons - Enhanced with interactive effects */}
         <div
           ref={ctaRef}
-          className="flex flex-col sm:flex-row gap-4 sm:gap-6 md:gap-8 lg:gap-10 mb-12 sm:mb-16 md:mb-20 px-4 sm:px-6"
+          className="flex flex-col sm:flex-row gap-3 sm:gap-6 md:gap-8 lg:gap-10 mb-10 sm:mb-16 md:mb-20 px-3 sm:px-6 w-full sm:w-auto"
         >
           <div
             ref={button1Ref}
@@ -289,7 +302,7 @@ export default function Section1() {
               href="#"
               variant="outline"
               size="md"
-              className="w-full sm:w-auto text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4 relative z-10 hover:scale-105 transition-transform duration-300"
+              className="w-full sm:w-auto text-sm sm:text-base px-5 sm:px-8 py-3 sm:py-4 relative z-10 hover:scale-105 transition-transform duration-300"
             >
               <Button color="white">Start Building</Button>
             </AnimatedButton>
@@ -305,7 +318,7 @@ export default function Section1() {
               href="#"
               variant="outline"
               size="md"
-              className="w-full sm:w-auto text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4 relative z-10 hover:scale-105 transition-transform duration-300"
+              className="w-full sm:w-auto text-sm sm:text-base px-5 sm:px-8 py-3 sm:py-4 relative z-10 hover:scale-105 transition-transform duration-300"
             >
               <Button color="white"> Let&apos;s talk</Button>
             </AnimatedButton>
