@@ -17,10 +17,11 @@ export default function Section2() {
   const carouselRef = useRef<HTMLDivElement>(null);
   const slidesRef = useRef<(HTMLDivElement | null)[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const isAutoPlaying = true;
+  const autoplayDurationMs = 4000;
+  const [slideProgress, setSlideProgress] = useState(0); // 0..1 progress for current slide
   const [isHovered, setIsHovered] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -84,16 +85,33 @@ export default function Section2() {
     return () => ctx.revert();
   }, []);
 
-  // Autoplay functionality
+  // Autoplay with smooth progress
   useEffect(() => {
     if (!isAutoPlaying || isHovered) return;
 
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % Boxdata.length);
-    }, 4000);
+    let startTimestamp = performance.now();
+    let rafId = 0;
 
-    return () => clearInterval(interval);
-  }, [isAutoPlaying, isHovered]);
+    const tick = (now: number) => {
+      const elapsed = now - startTimestamp;
+      const p = Math.min(1, elapsed / autoplayDurationMs);
+      setSlideProgress(p);
+      if (p >= 1) {
+        setCurrentSlide((prev) => (prev + 1) % Boxdata.length);
+        startTimestamp = performance.now();
+        setSlideProgress(0);
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+  }, [isAutoPlaying, isHovered, autoplayDurationMs]);
+
+  // Reset progress on manual nav
+  useEffect(() => {
+    setSlideProgress(0);
+  }, [currentSlide]);
 
   const nextSlide = () => {
     if (isTransitioning) return;
@@ -157,47 +175,6 @@ export default function Section2() {
     }
   };
 
-  const toggleAutoplay = () => {
-    setIsAutoPlaying(!isAutoPlaying);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const rect = carouselRef.current?.getBoundingClientRect();
-    if (rect) {
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
-      setMousePosition({ x: x * 100, y: y * 100 });
-    }
-  };
-
-  const handleSlideHover = (index: number) => {
-    if (index !== currentSlide && !isTransitioning) {
-      const slide = slidesRef.current[index];
-      if (slide) {
-        gsap.to(slide, {
-          scale: 1.02,
-          rotationY: index < currentSlide ? -5 : 5,
-          duration: 0.3,
-          ease: "power2.out",
-        });
-      }
-    }
-  };
-
-  const handleSlideLeave = (index: number) => {
-    if (index !== currentSlide) {
-      const slide = slidesRef.current[index];
-      if (slide) {
-        gsap.to(slide, {
-          scale: 1,
-          rotationY: index < currentSlide ? -15 : 15,
-          duration: 0.3,
-          ease: "power2.out",
-        });
-      }
-    }
-  };
-
   return (
     <div
       ref={sectionRef}
@@ -244,24 +221,37 @@ export default function Section2() {
           onMouseLeave={() => setIsHovered(false)}
         >
           {/* Carousel Container */}
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-800/20 to-gray-900/40 backdrop-blur-sm border border-gray-700/30">
+          <div className="relative overflow-hidden rounded-3xl bg-[#141414]">
             {/* Slides */}
             <div
-              className="flex transition-transform duration-700 ease-in-out"
+              className="flex transition-transform duration-700 ease-in-out "
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
             >
               {Boxdata.map((item, index) => (
                 <div key={index} className="w-full flex-shrink-0">
-                  <div className="mt-6 w-full bg-gray-700/30 rounded-full h-1 overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-[var(--brand-b)] to-[var(--brand-a)] rounded-full transition-all duration-300"
-                      style={{
-                        width: `${
-                          ((currentSlide + 1) / Boxdata.length) * 100
-                        }%`,
-                      }}
-                    >
-                      {index + 1}
+                  {/* Segmented Progress with per-slide fill */}
+                  <div className="mt-6 w-full flex items-center gap-4 ">
+                    <div className="flex-1 flex gap-2">
+                      {Boxdata.map((_, segIdx) => {
+                        const isPast = segIdx < currentSlide;
+                        const isCurrent = segIdx === currentSlide;
+                        const widthPercent = isPast
+                          ? 100
+                          : isCurrent
+                          ? Math.round(slideProgress * 100)
+                          : 0;
+                        return (
+                          <div
+                            key={segIdx}
+                            className="flex-1 bg-[#141414] rounded-full h-2 overflow-hidden"
+                          >
+                            <div
+                              className="h-full bg-gradient-to-r from-[var(--brand-b)] to-[var(--brand-a)] rounded-full transition-[width] duration-150"
+                              style={{ width: `${widthPercent}%` }}
+                            />
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                   <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16 p-8 lg:p-16 min-h-[500px] lg:min-h-[600px]">
@@ -292,12 +282,21 @@ export default function Section2() {
 
                     {/* Visual Side */}
                     <div className="flex-1 relative">
-                      <div className="relative w-full h-[300px] lg:h-[400px] rounded-2xl bg-gradient-to-br from-gray-800/30 to-gray-900/50 border border-gray-700/50 overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-br from-[var(--brand-b)]/10 to-[var(--brand-a)]/10" />
+                      <div className="group relative w-full h-[300px] lg:h-[400px] rounded-2xl bg-[#141414] overflow-hidden will-change-transform transition-transform duration-500 ease-out hover:scale-[1.01] hover:-rotate-[0.5deg]">
+                        {/* Glow orbs */}
+                        <div className="pointer-events-none absolute -top-10 -left-10 w-56 h-56 rounded-full bg-[var(--brand-b)]/15 blur-3xl" />
+                        <div className="pointer-events-none absolute -bottom-10 -right-10 w-56 h-56 rounded-full bg-[var(--brand-a)]/15 blur-3xl" />
+                        {/* Inner gradient veil */}
+                        <div className="absolute inset-0 " />
+                        {/* Center index as watermark */}
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="text-6xl lg:text-8xl opacity-20">
+                          <div className="text-6xl lg:text-8xl opacity-20 tracking-tighter">
                             {index + 1}
                           </div>
+                        </div>
+                        {/* Subtle moving light */}
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                          <div className="absolute inset-0 bg-[radial-gradient(circle_at_var(--x,50%)_var(--y,50%),_rgba(255,255,255,0.12),_transparent_40%)]" />
                         </div>
                       </div>
                     </div>
@@ -305,61 +304,83 @@ export default function Section2() {
                 </div>
               ))}
             </div>
-
-            {/* Navigation Arrows */}
-            <button
-              onClick={prevSlide}
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-full flex items-center justify-center hover:bg-gray-700/50 transition-all duration-300 hover:scale-110"
-            >
-              <svg
-                className="w-6 h-6 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-            </button>
-            <button
-              onClick={nextSlide}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-full flex items-center justify-center hover:bg-gray-700/50 transition-all duration-300 hover:scale-110"
-            >
-              <svg
-                className="w-6 h-6 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </button>
+            {/* Navigation Arrows moved to controls below */}
           </div>
 
           {/* Carousel Controls */}
-          <div className="flex items-center justify-center gap-4 mt-8">
-            {/* Dots Navigation */}
-            <div className="flex gap-3">
-              {Boxdata.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToSlide(index)}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                    currentSlide === index
-                      ? "bg-[var(--brand-b)] scale-125"
-                      : "bg-gray-600 hover:bg-gray-500"
-                  }`}
+          <div className="mt-8 flex items-center justify-center">
+            <div className="flex items-center gap-5 px-4 py-2 rounded-full bg-[#141414] backdrop-blur-md shadow-[0_0_1px_0_rgba(255,255,255,0.06)_inset]">
+              {/* Prev Button */}
+              <button
+                onClick={prevSlide}
+                className="w-10 h-10 bg-gray-800/60 backdrop-blur-sm border border-gray-700/60 rounded-full flex items-center justify-center hover:bg-gray-700/60 transition-all duration-300 hover:scale-110"
+                aria-label="Previous slide"
+              >
+                <svg
+                  className="w-5 h-5 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
+
+              {/* Dots Navigation */}
+              <div className="flex gap-3">
+                {Boxdata.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                      currentSlide === index
+                        ? "bg-[var(--brand-b)] ring-4 ring-[var(--brand-b)]/20"
+                        : "bg-gray-600 hover:bg-gray-500"
+                    }`}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
+              </div>
+
+              {/* Counter */}
+              <span className="text-xs text-gray-300 tabular-nums px-2">
+                {currentSlide + 1} / {Boxdata.length}
+              </span>
+
+              {/* Next Button (with subtle ring when progressing) */}
+              <button
+                onClick={nextSlide}
+                className="relative w-10 h-10 bg-gray-800/60 backdrop-blur-sm border border-gray-700/60 rounded-full flex items-center justify-center hover:bg-gray-700/60 transition-all duration-300 hover:scale-110"
+                aria-label="Next slide"
+              >
+                <svg
+                  className="w-5 h-5 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+                <span
+                  className="pointer-events-none absolute inset-0 rounded-full"
+                  style={{
+                    background: `conic-gradient(var(--brand-b) ${Math.round(
+                      slideProgress * 360
+                    )}deg, transparent 0deg)`,
+                  }}
                 />
-              ))}
+                <span className="absolute inset-[3px] rounded-full bg-transparent" />
+              </button>
             </div>
           </div>
 

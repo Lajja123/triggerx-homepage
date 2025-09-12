@@ -232,36 +232,12 @@ function Section5() {
       className="relative min-h-screen overflow-hidden"
       onMouseMove={handleMouseMove}
     >
-      {/* Animated background */}
-      <div className="animated-bg absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#141414] to-[#1a1a1a]"></div>
-
-      {/* Floating background elements */}
-      <div className="floating-element absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-[#82FBD0]/10 to-transparent rounded-full opacity-30"></div>
-      <div className="floating-element absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-[#5047FF]/10 to-transparent rounded-full opacity-40"></div>
-      <div className="floating-element absolute bottom-20 left-20 w-40 h-40 bg-gradient-to-br from-[#F8FF7C]/10 to-transparent rounded-full opacity-30"></div>
-      <div className="floating-element absolute bottom-40 right-10 w-28 h-28 bg-gradient-to-br from-[#82FBD0]/10 to-transparent rounded-full opacity-50"></div>
-
-      {/* Particle system */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(15)].map((_, i) => (
-          <div
-            key={i}
-            className="particle absolute w-1 h-1 bg-[#82FBD0]/60 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-          />
-        ))}
-      </div>
-
       {/* Mouse follower */}
-      <div className="mouse-follower fixed w-10 h-10 bg-gradient-to-r from-[#82FBD0]/20 to-[#5047FF]/20 rounded-full pointer-events-none z-50 blur-sm"></div>
 
       <section className="relative z-10 max-w-[1600px] mx-auto w-[90%] py-20">
         {/* Main Title */}
         <div ref={titleRef} className="text-center mb-20">
-          <div className="inline-block bg-gradient-to-r from-[#82FBD0] to-[#5047FF] p-1 rounded-lg mb-4">
+          <div className="inline-block bg-gradient-to-r  from-[#82FBD0] to-[#fbf197]  p-1 rounded-lg mb-4">
             <span className="text-sm font-bold text-black px-3 py-1">
               • GET STARTED
             </span>
@@ -269,10 +245,9 @@ function Section5() {
           <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-6 leading-tight">
             Get Started{" "}
             <span className="relative inline-block">
-              <span className="relative z-10 bg-gradient-to-r from-[#82FBD0] via-[#5047FF] to-[#F8FF7C] bg-clip-text text-transparent animate-pulse">
+              <span className="relative z-10 bg-gradient-to-r from-[#82FBD0] to-[#fbf197]  bg-clip-text text-transparent animate-pulse">
                 Today
               </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-[#82FBD0]/20 to-[#5047FF]/20 blur-xl rounded-full scale-150"></div>
             </span>
           </h1>
           <p className="text-[#A2A2A2] text-lg md:text-xl max-w-4xl mx-auto leading-relaxed">
@@ -350,65 +325,6 @@ function Section5() {
               ></div>
             </div>
           ))}
-        </div>
-
-        {/* Interactive Stats Section */}
-        <div className="text-center mb-20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="group cursor-pointer">
-              <div className="text-4xl font-bold text-[#82FBD0] mb-2 group-hover:scale-110 transition-transform duration-300">
-                10K+
-              </div>
-              <div className="text-gray-400 text-lg">Active Developers</div>
-            </div>
-            <div className="group cursor-pointer">
-              <div className="text-4xl font-bold text-[#5047FF] mb-2 group-hover:scale-110 transition-transform duration-300">
-                50M+
-              </div>
-              <div className="text-gray-400 text-lg">
-                Transactions Processed
-              </div>
-            </div>
-            <div className="group cursor-pointer">
-              <div className="text-4xl font-bold text-[#F8FF7C] mb-2 group-hover:scale-110 transition-transform duration-300">
-                99.9%
-              </div>
-              <div className="text-gray-400 text-lg">Uptime Reliability</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Enhanced CTA Section */}
-        <div className="text-center">
-          <div className="inline-flex items-center gap-8 p-10 rounded-3xl border border-[#2a2a2a] bg-gradient-to-r from-[#1a1a1a] to-[#252525] hover:border-[#82FBD0]/50 transition-all duration-500 group cursor-pointer hover:shadow-[0_0_40px_rgba(130,251,208,0.2)]">
-            <div className="w-20 h-20 bg-gradient-to-r from-[#82FBD0] to-[#5047FF] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 group-hover:shadow-[0_0_20px_rgba(130,251,208,0.5)]">
-              <span className="text-3xl">🚀</span>
-            </div>
-            <div className="text-left">
-              <h3 className="text-3xl font-bold text-white mb-3 group-hover:text-[#82FBD0] transition-colors duration-300">
-                Ready to Build the Future?
-              </h3>
-              <p className="text-[#A2A2A2] text-xl group-hover:text-gray-300 transition-colors duration-300">
-                Start your journey with TriggerX and revolutionize your
-                blockchain workflows
-              </p>
-            </div>
-            <div className="w-16 h-16 bg-[#82FBD0]/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-              <svg
-                className="w-8 h-8 text-[#82FBD0]"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </div>
-          </div>
         </div>
       </section>
     </div>

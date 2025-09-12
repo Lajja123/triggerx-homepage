@@ -7,6 +7,8 @@ import Footer from "@/components/Footer";
 import LoadingAnimation from "@/components/LoadingAnimation";
 import Section3 from "@/components/Section3";
 import { onLoadingComplete } from "@/components/LoadingAnimation";
+import Section4 from "@/components/Section4";
+import Section5 from "@/components/Section5";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -40,7 +42,10 @@ export default function Home() {
               <Header />
               <Section1 />
               <Section2 />
-              <Footer />
+              <Section3 />
+              {/* <Section4 />
+              <Section5 /> */}
+              {/* <Footer /> */}
             </main>
           </div>
         )}

@@ -266,7 +266,7 @@ export default function Section1() {
                 </span>
               </span>
             </div>
-            <span className="text-[#A2A2A2] text-lg sm:text-xl  group-hover:text-[#c07af6] transition-colors duration-300">
+            <span className="text-[#A2A2A2] text-lg sm:text-xl   transition-colors duration-300">
               {"}"}
             </span>
             {/* Glow effect on hover */}

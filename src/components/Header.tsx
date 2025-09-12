@@ -293,9 +293,14 @@ export default function Header() {
         <div className="flex items-center gap-4">
           {/* Desktop CTA Button */}
           <div className="hidden lg:block cta-button relative group">
-            <Button color="white">
-              <appkit-button />
-            </Button>
+            <AnimatedButton
+              href="#"
+              size="sm"
+              variant="outline"
+              className="relative z-10 hover:scale-105 transition-transform duration-300"
+            >
+              <Button color="white">Start Building</Button>
+            </AnimatedButton>
           </div>
 
           {/* Mobile menu button */}
