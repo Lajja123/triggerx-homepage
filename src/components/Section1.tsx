@@ -239,14 +239,10 @@ export default function Section1() {
           {/* Main text layer */}
           <h1
             ref={sec1Ref}
-            className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-7xl font-bold text-white leading-[1.15] sm:leading-tight tracking-tight relative z-10"
+            className="text-lg xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-7xl font-bold text-white leading-[1.15] sm:leading-tight tracking-tight relative z-10"
           >
             <span className="block tracking-wide mb-2 sm:mb-3">
-              {"Effortless Blockchain".split("").map((char, index) => (
-                <span key={index} className="text-char inline-block">
-                  {char === " " ? "\u00A0" : char}
-                </span>
-              ))}
+              Effortless Blockchain
             </span>
             <span className="block tracking-wide mt-1 sm:mt-0">
               <span className="bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
@@ -254,11 +250,7 @@ export default function Section1() {
               </span>
             </span>
             <span className="block tracking-wide mt-3 sm:mt-4">
-              {".Limitless Potential.".split("").map((char, index) => (
-                <span key={index} className="text-char inline-block">
-                  {char === " " ? "\u00A0" : char}
-                </span>
-              ))}
+              .Limitless Potential.
             </span>
           </h1>
         </div>
@@ -269,21 +261,20 @@ export default function Section1() {
           className="text-center mb-5 sm:mb-8 group cursor-pointer"
         >
           <div className="inline-flex items-center space-x-2 relative">
-            <span className="text-[#A2A2A2] text-base sm:text-xl  ">{"{"}</span>
+            <span className="text-[#A2A2A2] text-sm sm:text-xl  ">{"{"}</span>
             <div className="flex flex-col items-center space-y-1">
-              <span className="text-base sm:text-xl  text-white ">
-                POWERED BY{" "}
+              <span className="text-sm sm:text-xl  text-white ">
+                POWERED BY
                 <span className="typewriter-text font-bold inline-block bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
                   {typewriterText}
                   <span className="animate-pulse text-white">|</span>
                 </span>
               </span>
             </div>
-            <span className="text-[#A2A2A2] text-base sm:text-xl   transition-colors duration-300">
+            <span className="text-[#A2A2A2] text-sm sm:text-xl   transition-colors duration-300">
               {"}"}
             </span>
             {/* Glow effect on hover */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#8ab4ff]/20 to-[#fbf197]/20 blur-xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </div>
         </div>
 
@@ -298,12 +289,7 @@ export default function Section1() {
             onMouseMove={(e) => handleButtonMouseMove(e, button1Ref)}
             onMouseLeave={() => handleButtonMouseLeave(button1Ref)}
           >
-            <AnimatedButton
-              href="#"
-              variant="outline"
-              size="md"
-              className="w-full sm:w-auto text-sm sm:text-base px-5 sm:px-8 py-3 sm:py-4 relative z-10 hover:scale-105 transition-transform duration-300"
-            >
+            <AnimatedButton href="#" variant="outline" size="md">
               <Button color="white">Start Building</Button>
             </AnimatedButton>
           </div>
@@ -314,12 +300,7 @@ export default function Section1() {
             onMouseMove={(e) => handleButtonMouseMove(e, button2Ref)}
             onMouseLeave={() => handleButtonMouseLeave(button2Ref)}
           >
-            <AnimatedButton
-              href="#"
-              variant="outline"
-              size="md"
-              className="w-full sm:w-auto text-sm sm:text-base px-5 sm:px-8 py-3 sm:py-4 relative z-10 hover:scale-105 transition-transform duration-300"
-            >
+            <AnimatedButton href="#" variant="outline" size="md">
               <Button color="white"> Let&apos;s talk</Button>
             </AnimatedButton>
           </div>

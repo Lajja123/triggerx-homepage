@@ -226,7 +226,7 @@ export default function AnimatedButton({
   };
 
   const baseStyles =
-    "inline-flex items-center justify-center gap-1 rounded-full border border-[#fff282] bg-transparent text-white transition-all duration-300 ease-out";
+    "w-full sm:w-auto inline-flex items-center justify-center gap-1 rounded-full border border-[#fff282] bg-transparent text-white transition-all duration-300 ease-out";
   const combinedStyles = `bg-transparent ${baseStyles} ${getVariantStyles()} ${getSizeStyles()} ${className}`;
 
   if (href) {

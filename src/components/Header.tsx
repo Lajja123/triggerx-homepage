@@ -296,7 +296,7 @@ export default function Header() {
       {/* Mobile Navigation Menu */}
       <div
         ref={mobileNavRef}
-        className="lg:hidden fixed left-0 right-0 bg-[#141414]border-b border-white/10 z-[90]"
+        className="lg:hidden fixed left-0 right-0 bg-[#141414]border-b bg-[#0a0a0a] border-white/10 z-[90]"
         style={{
           display: "none",
           top: `${headerRef.current?.offsetHeight || 80}px`,
@@ -337,7 +337,7 @@ export default function Header() {
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-30"
+          className="lg:hidden fixed inset-0 bg-black/80 z-30"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}

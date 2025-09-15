@@ -203,14 +203,17 @@ const LoadingAnimation = () => {
       />
 
       {/* Letters container */}
-      <div className="flex gap-4 items-end h-[230px] letters-container relative">
+      <div
+        className="flex items-end letters-container relative gap-2 md:gap-3 lg:gap-4 xl:gap-6"
+        style={{ height: "clamp(140px, 22vw, 230px)" }}
+      >
         {letters.map((letter, index) => (
           <div
             key={index}
             ref={(el) => {
               lettersRef.current[index] = el;
             }}
-            className="w-max h-[230px] relative opacity-0 scale-0 letter-item"
+            className="w-max h-full relative opacity-0 scale-0 letter-item"
             style={{
               width: "auto",
               height: "100%",
@@ -227,7 +230,7 @@ const LoadingAnimation = () => {
                   .toUpperCase()}`}
                 width={230}
                 height={230}
-                className="h-full w-auto transition-opacity duration-300"
+                className="h-15 sm:h-full object-contain w-auto transition-opacity duration-300"
               />
             </div>
           </div>
