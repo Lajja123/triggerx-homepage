@@ -22,6 +22,8 @@ export default function Section2() {
   const [slideProgress, setSlideProgress] = useState(0); // 0..1 progress for current slide
   const [isHovered, setIsHovered] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const touchStartXRef = useRef(0);
+  const touchEndXRef = useRef(0);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -70,12 +72,13 @@ export default function Section2() {
         );
       }
 
-      // Animate slides with 3D effects
+      // Animate slides with 3D effects (reduced on small screens)
+      const isSmall = typeof window !== "undefined" && window.innerWidth < 640;
       slidesRef.current.forEach((slide, index) => {
         if (slide) {
           gsap.set(slide, {
-            rotationY: index === 0 ? 0 : 15,
-            z: index === 0 ? 0 : -100,
+            rotationY: isSmall ? 0 : index === 0 ? 0 : 15,
+            z: isSmall ? 0 : index === 0 ? 0 : -100,
             opacity: index === 0 ? 1 : 0.7,
           });
         }
@@ -175,12 +178,33 @@ export default function Section2() {
     }
   };
 
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    touchEndXRef.current = e.touches[0].clientX;
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    touchEndXRef.current = e.touches[0].clientX;
+  };
+
+  const onTouchEnd = () => {
+    const delta = touchEndXRef.current - touchStartXRef.current;
+    const threshold = 50;
+    if (Math.abs(delta) > threshold) {
+      if (delta < 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
+    }
+  };
+
   return (
     <div
       ref={sectionRef}
       className="relative min-h-screen bg-gradient-to-b from-transparent via-gray-900/20 to-transparent"
     >
-      <section className="relative z-10 w-[95%] sm:w-[90%] max-w-[1400px] mx-auto py-16 sm:py-20 lg:py-24">
+      <section className="relative z-10 w-[95%] sm:w-[90%] max-w-[1400px] mx-auto py-10 sm:py-16 lg:py-24">
         {/* Main title section */}
         <div ref={titleRef} className="text-center mb-16 sm:mb-20 lg:mb-24">
           <div className="relative inline-block">
@@ -219,6 +243,9 @@ export default function Section2() {
           className="relative"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
         >
           {/* Carousel Container */}
           <div className="relative overflow-hidden rounded-3xl bg-[#141414]">
@@ -231,7 +258,7 @@ export default function Section2() {
                 <div key={index} className="w-full flex-shrink-0">
                   {/* Segmented Progress with per-slide fill */}
                   <div className="mt-6 w-full flex items-center gap-4 ">
-                    <div className="flex-1 flex gap-2">
+                    <div className="flex-1 flex gap-2 p-6 ">
                       {Boxdata.map((_, segIdx) => {
                         const isPast = segIdx < currentSlide;
                         const isCurrent = segIdx === currentSlide;
@@ -254,24 +281,24 @@ export default function Section2() {
                       })}
                     </div>
                   </div>
-                  <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16 p-8 lg:p-16 min-h-[500px] lg:min-h-[600px]">
+                  <div className="flex flex-col lg:flex-row items-center gap-6 sm:gap-8 lg:gap-16 p-6 sm:p-8 lg:p-16 min-h-[380px] sm:min-h-[460px] lg:min-h-[600px]">
                     {/* Content Side */}
                     <div className="flex-1 space-y-6 lg:space-y-8 text-center lg:text-left">
-                      <H3 className="text-3xl lg:text-5xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent leading-tight">
+                      <H3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent leading-tight">
                         {item.title}
                       </H3>
 
-                      <Body className="text-lg lg:text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                      <Body className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-300 leading-relaxed max-w-xl sm:max-w-2xl mx-auto lg:mx-0">
                         {item.description}
                       </Body>
 
                       {/* Feature Tags */}
-                      <div className="flex flex-wrap justify-center lg:justify-start gap-3 pt-4">
+                      <div className="flex  justify-center lg:justify-start gap-2 sm:gap-3 pt-2 sm:pt-4">
                         {["Automation", "Security", "Scalability"].map(
                           (tag, tagIndex) => (
                             <span
                               key={tagIndex}
-                              className="px-4 py-2 rounded-full text-sm border border-gray-600 hover:border-[var(--brand-b)]/50 hover:bg-[var(--brand-b)]/10 transition-all duration-300 hover:scale-105"
+                              className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm border border-gray-600 hover:border-[var(--brand-b)]/50 hover:bg-[var(--brand-b)]/10 transition-all duration-300 hover:scale-105"
                             >
                               {tag}
                             </span>
@@ -281,8 +308,8 @@ export default function Section2() {
                     </div>
 
                     {/* Visual Side */}
-                    <div className="flex-1 relative">
-                      <div className="group relative w-full h-[300px] lg:h-[400px] rounded-2xl bg-[#141414] overflow-hidden will-change-transform transition-transform duration-500 ease-out hover:scale-[1.01] hover:-rotate-[0.5deg]">
+                    <div className="flex-1 relative w-full">
+                      <div className="group relative w-full h-[240px] sm:h-[300px] lg:h-[400px] rounded-2xl bg-[#141414] overflow-hidden will-change-transform transition-transform duration-500 ease-out hover:scale-[1.01] hover:-rotate-[0.5deg]">
                         {/* Glow orbs */}
                         <div className="pointer-events-none absolute -top-10 -left-10 w-56 h-56 rounded-full bg-[var(--brand-b)]/15 blur-3xl" />
                         <div className="pointer-events-none absolute -bottom-10 -right-10 w-56 h-56 rounded-full bg-[var(--brand-a)]/15 blur-3xl" />
@@ -290,7 +317,7 @@ export default function Section2() {
                         <div className="absolute inset-0 " />
                         {/* Center index as watermark */}
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="text-6xl lg:text-8xl opacity-20 tracking-tighter">
+                          <div className="text-4xl sm:text-6xl lg:text-8xl opacity-20 tracking-tighter">
                             {index + 1}
                           </div>
                         </div>
@@ -346,11 +373,6 @@ export default function Section2() {
                   />
                 ))}
               </div>
-
-              {/* Counter */}
-              <span className="text-xs text-gray-300 tabular-nums px-2">
-                {currentSlide + 1} / {Boxdata.length}
-              </span>
 
               {/* Next Button (with subtle ring when progressing) */}
               <button
