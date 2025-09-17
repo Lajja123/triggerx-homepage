@@ -9,8 +9,9 @@ if (typeof window !== "undefined") {
 }
 
 function Section5() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [, setMousePosition] = useState({ x: 0, y: 0 });
+  const [, setHoveredCard] = useState<number | null>(null);
+  const [emailCopied, setEmailCopied] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
@@ -220,9 +221,41 @@ function Section5() {
     if (card) {
       gsap.to(card, {
         scale: 1,
+        rotateX: 0,
+        rotateY: 0,
         duration: 0.3,
         ease: "power2.out",
       });
+    }
+  };
+
+  const handleCardMouseMove = (
+    index: number,
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    const target = event.currentTarget as HTMLDivElement;
+    const rect = target.getBoundingClientRect();
+    const relX = event.clientX - rect.left;
+    const relY = event.clientY - rect.top;
+    const rotateY = ((relX - rect.width / 2) / rect.width) * 12; // tilt left/right
+    const rotateX = -((relY - rect.height / 2) / rect.height) * 12; // tilt up/down
+    gsap.to(target, {
+      rotateX,
+      rotateY,
+      transformPerspective: 700,
+      transformOrigin: "center",
+      duration: 0.2,
+      ease: "power2.out",
+    });
+  };
+
+  const copyEmail = async (email: string) => {
+    try {
+      await navigator.clipboard.writeText(email);
+      setEmailCopied(true);
+      setTimeout(() => setEmailCopied(false), 1500);
+    } catch {
+      // no-op
     }
   };
 
@@ -268,6 +301,9 @@ function Section5() {
               className="contact-card group relative bg-gradient-to-br from-[#141414] to-[#1a1a1a] rounded-3xl border border-white/10 overflow-hidden transition-all duration-500 hover:shadow-[0_0_30px_rgba(130,251,208,0.3)] hover:border-[#82FBD0]/50 cursor-pointer"
               onMouseEnter={() => handleCardHover(index)}
               onMouseLeave={() => handleCardLeave(index)}
+              onMouseMove={(e) => handleCardMouseMove(index, e)}
+              role="article"
+              aria-label={card.title}
             >
               {/* Animated background overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-transparent via-[#82FBD0]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -295,27 +331,49 @@ function Section5() {
                 </div>
 
                 {/* Link with enhanced styling */}
-                <a
-                  href={card.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-[#82FBD0] group-hover:translate-x-2 transition-all duration-300 text-sm font-medium hover:text-[#F8FF7C]"
-                >
-                  {card.linkText}
-                  <svg
-                    className="w-4 h-4 ml-2 group-hover:scale-110 transition-transform duration-300"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                {card.id === 1 ? (
+                  <button
+                    onClick={() => copyEmail(card.link.replace("mailto:", ""))}
+                    className="inline-flex items-center px-3 py-2 rounded-lg bg-[#82FBD0]/10 text-[#82FBD0] hover:bg-[#82FBD0]/20 transition-all duration-300 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#82FBD0]/40"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M14 5l7 7m0 0l-7 7m7-7H3"
-                    />
-                  </svg>
-                </a>
+                    {emailCopied ? "Copied!" : card.linkText}
+                    <svg
+                      className="w-4 h-4 ml-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 16h8M8 12h8m-1-8H9a2 2 0 00-2 2v14l5-3 5 3V6a2 2 0 00-2-2z"
+                      />
+                    </svg>
+                  </button>
+                ) : (
+                  <a
+                    href={card.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-[#82FBD0] group-hover:translate-x-2 transition-all duration-300 text-sm font-medium hover:text-[#F8FF7C]"
+                  >
+                    {card.linkText}
+                    <svg
+                      className="w-4 h-4 ml-2 group-hover:scale-110 transition-transform duration-300"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M14 5l7 7m0 0l-7 7m7-7H3"
+                      />
+                    </svg>
+                  </a>
+                )}
               </div>
 
               {/* Glow effect on hover */}

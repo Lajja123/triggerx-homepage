@@ -264,7 +264,7 @@ export default function Section1() {
             <span className="text-[#A2A2A2] text-sm sm:text-xl  ">{"{"}</span>
             <div className="flex flex-col items-center space-y-1">
               <span className="text-sm sm:text-xl  text-white ">
-                POWERED BY
+                POWERED BY {""}
                 <span className="typewriter-text font-bold inline-block bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
                   {typewriterText}
                   <span className="animate-pulse text-white">|</span>
