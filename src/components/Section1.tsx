@@ -16,6 +16,7 @@ export default function Section1() {
   const [typewriterIndex, setTypewriterIndex] = useState(0);
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [activeHeadlineIndex, setActiveHeadlineIndex] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const button1Ref = useRef<HTMLDivElement>(null);
@@ -123,6 +124,14 @@ export default function Section1() {
     }
   }, [typewriterIndex]);
 
+  // Rotate gradient highlight across headline phrases every 5 seconds
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setActiveHeadlineIndex((prev) => (prev + 1) % 3);
+    }, 5000);
+    return () => window.clearInterval(intervalId);
+  }, []);
+
   const handleMouseMove = (e: React.MouseEvent) => {
     if (isSmallScreen) return;
     setMousePosition({ x: e.clientX, y: e.clientY });
@@ -209,11 +218,6 @@ export default function Section1() {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Mouse follower removed - now handled globally */}
-
-      {/* Removed fixed left corner element - will be placed above buttons instead */}
-
-      {/* Dynamic Background Gradient */}
       <div
         className="absolute inset-0 bg-gradient-radial from-[#c07af6]/10 via-transparent to-transparent pointer-events-none"
         style={{
@@ -233,23 +237,39 @@ export default function Section1() {
         }}
       />
 
-      <section className="relative z-10 flex flex-col items-center justify-center min-h-[85vh] sm:min-h-screen px-3 sm:px-6 md:px-8 lg:px-12 pt-6 sm:pt-12 md:pt-16 max-w-[1200px] mx-auto">
+      <section className="relative z-10 flex flex-col items-center justify-center min-h-screen px-3 sm:px-6 md:px-8 lg:px-12 pt-6 sm:pt-12 md:pt-16 max-w-[1200px] mx-auto">
         {/* Main Headline - Enhanced with GSAP text animation */}
         <div className="text-center mb-6 sm:mb-10 md:mb-12 px-1 sm:px-4 relative max-w-[92%] sm:max-w-[85%] mx-auto">
           {/* Main text layer */}
           <h1
             ref={sec1Ref}
-            className="text-lg xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-7xl font-bold text-white leading-[1.15] sm:leading-tight tracking-tight relative z-10"
+            className="text-xl  xs:2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-7xl font-bold text-white leading-[1.15] sm:leading-tight tracking-tight relative z-10"
           >
-            <span className="block tracking-wide mb-2 sm:mb-3">
+            <span
+              className={`block tracking-wide mb-2 sm:mb-3 ${
+                activeHeadlineIndex === 0
+                  ? "bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent"
+                  : ""
+              }`}
+            >
               Effortless Blockchain
             </span>
-            <span className="block tracking-wide mt-1 sm:mt-0">
-              <span className="bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent">
-                Automation
-              </span>
+            <span
+              className={`block tracking-wide mt-1 sm:mt-0 ${
+                activeHeadlineIndex === 1
+                  ? "bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent"
+                  : ""
+              }`}
+            >
+              Automation
             </span>
-            <span className="block tracking-wide mt-3 sm:mt-4">
+            <span
+              className={`block tracking-wide mt-3 sm:mt-4 ${
+                activeHeadlineIndex === 2
+                  ? "bg-gradient-to-r from-[#82FBD0] to-[#fbf197] bg-clip-text text-transparent"
+                  : ""
+              }`}
+            >
               .Limitless Potential.
             </span>
           </h1>
@@ -281,15 +301,19 @@ export default function Section1() {
         {/* CTA Buttons - Enhanced with interactive effects */}
         <div
           ref={ctaRef}
-          className="flex flex-col sm:flex-row gap-3 sm:gap-6 md:gap-8 lg:gap-10 mb-10 sm:mb-16 md:mb-20 px-3 sm:px-6 w-full sm:w-auto"
+          className="flex flex-col  sm:flex-row gap-3 sm:gap-6 md:gap-8 lg:gap-10 mb-10 sm:mb-16 md:mb-20 px-3 sm:px-6 justify-center"
         >
           <div
             ref={button1Ref}
-            className="group relative"
+            className="group relative "
             onMouseMove={(e) => handleButtonMouseMove(e, button1Ref)}
             onMouseLeave={() => handleButtonMouseLeave(button1Ref)}
           >
-            <AnimatedButton href="#" variant="outline" size="md">
+            <AnimatedButton
+              href="https://app.triggerx.network/"
+              variant="outline"
+              className="w-50  md:px-6 md:py-3 md:text-lg px-5 py-2.5 text-base"
+            >
               <Button color="white">Start Building</Button>
             </AnimatedButton>
           </div>
@@ -300,7 +324,11 @@ export default function Section1() {
             onMouseMove={(e) => handleButtonMouseMove(e, button2Ref)}
             onMouseLeave={() => handleButtonMouseLeave(button2Ref)}
           >
-            <AnimatedButton href="#" variant="outline" size="md">
+            <AnimatedButton
+              href="#"
+              variant="outline"
+              className="w-50  md:px-6 md:py-3 md:text-lg px-5 py-2.5 text-base"
+            >
               <Button color="white"> Let&apos;s talk</Button>
             </AnimatedButton>
           </div>

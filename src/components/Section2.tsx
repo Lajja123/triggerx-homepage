@@ -210,7 +210,7 @@ export default function Section2() {
           <div className="relative inline-block">
             <H1 className="mb-6 sm:mb-8 flex items-center justify-center gap-3 sm:gap-4 lg:gap-6 flex-wrap">
               <span className="relative">
-                <span className="relative z-10 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold">
+                <span className="relative z-10  text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold">
                   Trigger
                 </span>
               </span>
@@ -218,9 +218,9 @@ export default function Section2() {
                 <Image
                   src="/letters/x.png"
                   alt="X"
-                  width={120}
-                  height={120}
-                  className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 inline-block animate-pulse"
+                  width={100}
+                  height={100}
+                  className="w-12  sm:w-16  md:w-20 h-10 md:h-20 lg:w-25  inline-block animate-pulse"
                 />
               </div>
               <span
@@ -230,7 +230,7 @@ export default function Section2() {
                 ?
               </span>
             </H1>
-            <Body className="text-base sm:text-lg lg:text-xl text-gray-400 max-w-xs sm:max-w-lg lg:max-w-2xl mx-auto leading-relaxed px-4">
+            <Body className="text-center text-sm sm:text-md lg:text-lg text-[#99A1AF] max-w-xs sm:max-w-lg lg:max-w-2xl mx-auto leading-relaxed px-4 font-normal">
               Discover the future of decentralized automation with cutting-edge
               features designed for the modern blockchain ecosystem
             </Body>
@@ -288,7 +288,7 @@ export default function Section2() {
                         {item.title}
                       </H3>
 
-                      <Body className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-300 leading-relaxed max-w-xl sm:max-w-2xl mx-auto lg:mx-0">
+                      <Body className="text-sm sm:text-md md:text-lg lg:text-lg text-[#99A1AF] leading-relaxed max-w-xl sm:max-w-2xl mx-auto lg:mx-0">
                         {item.description}
                       </Body>
 
@@ -340,7 +340,7 @@ export default function Section2() {
               {/* Prev Button */}
               <button
                 onClick={prevSlide}
-                className="w-10 h-10 bg-gray-800/60 backdrop-blur-sm border border-gray-700/60 rounded-full flex items-center justify-center hover:bg-gray-700/60 transition-all duration-300 hover:scale-110"
+                className="w-10 h-10  bg-gradient-to-r from-[#FBF197]/20 to-[#82FBD0]/37 border border-[#82FBD0]/40 text-[#FFFFFF]  rounded-full flex items-center justify-center hover:bg-gray-700/60 transition-all duration-300 hover:scale-110"
                 aria-label="Previous slide"
               >
                 <svg
@@ -377,7 +377,7 @@ export default function Section2() {
               {/* Next Button (with subtle ring when progressing) */}
               <button
                 onClick={nextSlide}
-                className="relative w-10 h-10 bg-gray-800/60 backdrop-blur-sm border border-gray-700/60 rounded-full flex items-center justify-center hover:bg-gray-700/60 transition-all duration-300 hover:scale-110"
+                className="relative w-10 h-10  bg-gradient-to-r from-[#FBF197]/20 to-[#82FBD0]/37 border border-[#82FBD0]/40 text-[#FFFFFF]  rounded-full flex items-center justify-center hover:bg-gray-700/60 transition-all duration-300 hover:scale-110"
                 aria-label="Next slide"
               >
                 <svg

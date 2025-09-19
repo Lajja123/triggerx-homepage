@@ -2,6 +2,8 @@
 import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
+import { Body, H1 } from "./ui/Typography";
 
 // Register ScrollTrigger plugin
 if (typeof window !== "undefined") {
@@ -10,145 +12,187 @@ if (typeof window !== "undefined") {
 
 function Section4() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const tickerTween = useRef<gsap.core.Tween | null>(null);
 
-  const leftCards = [
-    {
-      title: "Leo",
-      subtitle: "A language for building private applications",
-      accent: "from-[var(--brand-b)] to-[var(--brand-a)]",
-      icon: "↗",
-    },
-    {
-      title: "Aleo SDK",
-      subtitle: "Tools to integrate Aleo into your business",
-      accent: "from-[var(--brand-a)] to-[var(--brand-d)]",
-      icon: "↗",
-    },
-    {
-      title: "Aleo Instructions",
-      subtitle: "Low-level commands that power private computations",
-      accent: "from-[var(--brand-d)] to-[var(--brand-b)]",
-      icon: "↗",
-    },
-  ];
-
-  const rightCards = [
-    {
-      title: "Aleo Explorer",
-      subtitle: "View network activity and transactions",
-      accent: "from-[var(--brand-b)] to-[var(--brand-a)]",
-      icon: "↗",
-    },
-    {
-      title: "snarkOS",
-      subtitle: "The blockchain operating system for Aleo",
-      accent: "from-[var(--brand-a)] to-[var(--brand-c)]",
-      icon: "🟢",
-    },
-    {
-      title: "snarkVM",
-      subtitle: "The engine powering privacy and computation",
-      accent: "from-[var(--brand-a)] to-[var(--brand-c)]",
-      icon: "🟢",
-    },
+  const chips = [
+    { label: "Automated API calls", icon: "✴" },
+    { label: "Liquidity management", icon: "∞" },
+    { label: "Governance actions", icon: "ℵ" },
+    { label: "Token burns or mints", icon: "∞" },
+    { label: "User notifications and more!", icon: "✴" },
   ];
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const cards = sectionRef.current?.querySelectorAll(".dev-card");
-      cards?.forEach((card, i) => {
+      // Check if mobile screen
+      const isMobile = window.innerWidth < 768;
+
+      // Reveal the whole section on enter
+      if (sectionRef.current) {
+        gsap.from(sectionRef.current, {
+          autoAlpha: 0,
+          y: 24,
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        });
+      }
+
+      // Title and description subtle reveal
+      const titleEl = sectionRef.current?.querySelector(".section4-title");
+      const bodyEl = sectionRef.current?.querySelector(".section4-body");
+      if (titleEl) {
         gsap.fromTo(
-          card,
-          { opacity: 0, y: 30 },
+          titleEl,
+          { autoAlpha: 0, y: 20, filter: "blur(4px)" },
+          {
+            autoAlpha: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 0.8,
+            ease: "power2.out",
+            scrollTrigger: { trigger: titleEl, start: "top 90%" },
+          }
+        );
+      }
+      if (bodyEl) {
+        gsap.fromTo(
+          bodyEl,
+          { autoAlpha: 0, y: 16 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.7,
+            delay: 0.1,
+            ease: "power2.out",
+            scrollTrigger: { trigger: bodyEl, start: "top 92%" },
+          }
+        );
+      }
+
+      // Animate chips for all screen sizes
+      const chipsEls = sectionRef.current?.querySelectorAll(".dev-chip");
+      chipsEls?.forEach((chip, i) => {
+        gsap.fromTo(
+          chip,
+          { opacity: 0, y: 16, scale: 0.96, filter: "blur(3px)" },
           {
             opacity: 1,
             y: 0,
-            duration: 0.8,
-            delay: i * 0.1,
+            scale: 1,
+            filter: "blur(0px)",
+            duration: 0.6,
+            delay: i * 0.08,
             ease: "power2.out",
             scrollTrigger: {
-              trigger: card,
-              start: "top 90%",
+              trigger: chip as Element,
+              start: "top 92%",
             },
           }
         );
       });
+
+      const icons = sectionRef.current?.querySelectorAll(".chip-icon");
+      if (icons && icons.length) {
+        gsap.from(icons, {
+          scale: 0.8,
+          rotate: -8,
+          autoAlpha: 0,
+          duration: 0.5,
+          stagger: 0.08,
+          ease: "back.out(1.7)",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 85%",
+          },
+        });
+      }
+
+      // Only run ticker animation on desktop
+      if (!isMobile) {
+        const track = sectionRef.current?.querySelector(
+          ".ticker-track"
+        ) as HTMLElement | null;
+        if (track) {
+          gsap.set(track, { xPercent: 0 });
+          tickerTween.current = gsap.to(track, {
+            xPercent: -50,
+            duration: 24,
+            ease: "none",
+            repeat: -1,
+          });
+        }
+      }
     }, sectionRef);
     return () => ctx.revert();
   }, []);
 
   return (
     <div ref={sectionRef} className="relative py-24  rounded-[80px]">
-      <section className="relative z-10 max-w-7xl mx-auto px-6">
-        <div className="mb-12 text-center">
-          <h2 className="title-text text-white font-sharpGrotesk text-4xl md:text-6xl leading-tight">
-            Developer Resources
-          </h2>
-          <p className="text-[#A2A2A2] mt-4">Explore docs, SDKs and tools</p>
+      <section className="relative z-10 max-w-7xl mx-auto px-6 min-h-[60vh]">
+        <div className="mb-10 text-center">
+          <H1 className="section4-title mb-6 sm:mb-8 flex items-center justify-center gap-3 sm:gap-4 lg:gap-6 flex-wrap">
+            Trigger
+            <Image
+              src="/letters/x.png"
+              alt="X"
+              width={100}
+              height={100}
+              className="w-12  sm:w-16  md:w-20 h-10 md:h-20 lg:w-25  inline-block animate-pulse"
+            />{" "}
+            For
+            <span
+              className="relative  inline-block animate-bounce text-[var(--brand-c)] text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold"
+              style={{ animationDelay: "0.5s" }}
+            >
+              ?
+            </span>{" "}
+          </H1>
+          <Body className="section4-body text-center text-sm sm:text-md lg:text-lg text-[#99A1AF] max-w-2xl mx-auto leading-relaxed px-4 font-normal">
+            Whether you&apos;re a dApp developer, DeFi protocol creator, or
+            enterprise innovator, TriggerX empowers you to automate tasks with
+            ease and confidence.{" "}
+          </Body>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left column */}
-          <div className="space-y-8">
-            {leftCards.map((card, idx) => (
-              <article
-                key={idx}
-                className="dev-card group relative rounded-[28px] bg-[#141414] border border-white/10 p-8 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:bg-[#141414]  hover:shadow-[0_0_0_1px_rgba(255,255,255,0.15),0_24px_40px_-20px_rgba(0,0,0,0.6)]"
+        {/* Mobile Layout - Stacked Cards */}
+        <div className="md:hidden">
+          <div className="flex flex-col gap-3">
+            {chips.map((chip, i) => (
+              <div
+                key={`${chip.label}-${i}`}
+                className="dev-chip flex items-center gap-3 rounded-full bg-[#141414] border border-white/10 px-4 py-3 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.04)]"
               >
-                <div
-                  className={`pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r ${card.accent} opacity-50 group-hover:opacity-100 transition-opacity duration-300`}
-                ></div>
-                <div
-                  className={`pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r ${card.accent} opacity-50 group-hover:opacity-100 transition-opacity duration-300`}
-                ></div>
-                <div
-                  className={`pointer-events-none absolute -inset-px rounded-[28px] bg-gradient-to-r ${card.accent} opacity-0 group-hover:opacity-20 blur-md transition-opacity duration-300`}
-                ></div>
-
-                <div className="flex items-start justify-between">
-                  <h3 className="text-4xl md:text-5xl font-sharpGrotesk text-white">
-                    {card.title}
-                  </h3>
-                  <span className="text-white/70 transform transition-transform duration-300 group-hover:translate-x-1">
-                    {card.icon}
-                  </span>
-                </div>
-                <p className="mt-4 text-[#C8C8C8] text-base md:text-lg max-w-2xl">
-                  {card.subtitle}
-                </p>
-              </article>
+                <span className="chip-icon flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-[#FBF197]/20 to-[#82FBD0]/37 border border-[#82FBD0] text-[#FFFFFF] text-sm">
+                  {chip.icon}
+                </span>
+                <span className="text-sm">{chip.label}</span>
+              </div>
             ))}
           </div>
+        </div>
 
-          {/* Right column */}
-          <div className="space-y-8">
-            {rightCards.map((card, idx) => (
-              <article
-                key={idx}
-                className="dev-card group relative rounded-[28px] bg-[#141414] border border-white/10 p-8 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:bg-[#141414]  hover:shadow-[0_0_0_1px_rgba(255,255,255,0.15),0_24px_40px_-20px_rgba(0,0,0,0.6)]"
+        {/* Desktop Layout - Ticker Animation */}
+        <div className="hidden md:block relative overflow-hidden py-4">
+          <div
+            className="ticker-track flex items-center gap-4 lg:gap-6 whitespace-nowrap will-change-transform"
+            onMouseEnter={() => tickerTween.current?.pause()}
+            onMouseLeave={() => tickerTween.current?.resume()}
+          >
+            {[...chips, ...chips].map((chip, i) => (
+              <div
+                key={`${chip.label}-${i}`}
+                className="dev-chip inline-flex items-center gap-3 rounded-full bg-[#141414] border border-white/10 px-5 lg:px-6 py-3 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.04)]"
               >
-                <div
-                  className={`pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r ${card.accent} opacity-50 group-hover:opacity-100 transition-opacity duration-300`}
-                ></div>
-                <div
-                  className={`pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r ${card.accent} opacity-50 group-hover:opacity-100 transition-opacity duration-300`}
-                ></div>
-                <div
-                  className={`pointer-events-none absolute -inset-px rounded-[28px] bg-gradient-to-r ${card.accent} opacity-0 group-hover:opacity-20 blur-md transition-opacity duration-300`}
-                ></div>
-
-                <div className="flex items-start justify-between">
-                  <h3 className="text-4xl md:text-5xl font-sharpGrotesk text-white">
-                    {card.title}
-                  </h3>
-                  <span className="text-white/70 transform transition-transform duration-300 group-hover:translate-x-1">
-                    {card.icon}
-                  </span>
-                </div>
-                <p className="mt-4 text-[#C8C8C8] text-base md:text-lg max-w-2xl">
-                  {card.subtitle}
-                </p>
-              </article>
+                <span className="chip-icon inline-flex items-center justify-center w-9 h-9 rounded-full  bg-gradient-to-r from-[#FBF197]/20 to-[#82FBD0]/37 border border-[#82FBD0]/30 text-[#FFFFFF] text-base">
+                  {chip.icon}
+                </span>
+                <span className="text-base lg:text-lg">{chip.label}</span>
+              </div>
             ))}
           </div>
         </div>

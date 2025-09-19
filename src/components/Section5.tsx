@@ -70,7 +70,7 @@ function Section5() {
       description: "Stay updated with our latest news and announcements.",
       icon: (
         <svg
-          className="w-6 h-6 text-[#f7fb82]"
+          className="w-6 h-6 text-[#82FBD0]"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -262,20 +262,16 @@ function Section5() {
   return (
     <div
       ref={sectionRef}
-      className="relative min-h-screen overflow-hidden"
+      id="contact"
+      className="relative overflow-hidden"
       onMouseMove={handleMouseMove}
     >
       {/* Mouse follower */}
 
-      <section className="relative z-10 max-w-[1600px] mx-auto w-[90%] py-20">
+      <section className="relative z-10 max-w-[1600px] mx-auto w-[90%] py-20 min-h-screen ">
         {/* Main Title */}
         <div ref={titleRef} className="text-center mb-20">
-          <div className="inline-block bg-gradient-to-r  from-[#82FBD0] to-[#fbf197]  p-1 rounded-lg mb-4">
-            <span className="text-sm font-bold text-black px-3 py-1">
-              • GET STARTED
-            </span>
-          </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-6 leading-tight">
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-6 leading-tight">
             Get Started{" "}
             <span className="relative inline-block">
               <span className="relative z-10 bg-gradient-to-r from-[#82FBD0] to-[#fbf197]  bg-clip-text text-transparent animate-pulse">
@@ -283,10 +279,6 @@ function Section5() {
               </span>
             </span>
           </h1>
-          <p className="text-[#A2A2A2] text-lg md:text-xl max-w-4xl mx-auto leading-relaxed">
-            Join thousands of developers building the future of web3 with
-            TriggerX
-          </p>
         </div>
 
         {/* Contact Cards Grid */}
@@ -298,24 +290,17 @@ function Section5() {
             <div
               key={card.id}
               data-card={index}
-              className="contact-card group relative bg-gradient-to-br from-[#141414] to-[#1a1a1a] rounded-3xl border border-white/10 overflow-hidden transition-all duration-500 hover:shadow-[0_0_30px_rgba(130,251,208,0.3)] hover:border-[#82FBD0]/50 cursor-pointer"
+              className="group relative bg-gradient-to-br from-[#141414] to-[#1a1a1a] rounded-3xl border border-white/10 overflow-hidden transition-all duration-500  hover:border-[#82FBD0]/50 cursor-pointer"
               onMouseEnter={() => handleCardHover(index)}
               onMouseLeave={() => handleCardLeave(index)}
               onMouseMove={(e) => handleCardMouseMove(index, e)}
               role="article"
               aria-label={card.title}
             >
-              {/* Animated background overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-[#82FBD0]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-              {/* Floating elements inside card */}
-              <div className="absolute top-4 right-4 w-8 h-8 bg-gradient-to-br from-[#82FBD0]/10 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="absolute bottom-4 left-4 w-6 h-6 bg-gradient-to-br from-[#5047FF]/10 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
               <div className="relative p-8 h-full flex flex-col">
                 <div className="flex-1">
                   {/* Icon container with enhanced styling */}
-                  <div className="w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-[#82FBD0]/10 to-[#5047FF]/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 group-hover:shadow-[0_0_20px_rgba(130,251,208,0.3)]">
+                  <div className="w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-[#FFFFFF]/10 to-[#3F3F3F]/14 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 group-hover:shadow-[0_0_20px_rgba(130,251,208,0.3)]">
                     {card.icon}
                   </div>
 
@@ -334,7 +319,7 @@ function Section5() {
                 {card.id === 1 ? (
                   <button
                     onClick={() => copyEmail(card.link.replace("mailto:", ""))}
-                    className="inline-flex items-center px-3 py-2 rounded-lg bg-[#82FBD0]/10 text-[#82FBD0] hover:bg-[#82FBD0]/20 transition-all duration-300 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#82FBD0]/40"
+                    className="inline-flex items-center px-3 py-2 rounded-lg bg-gradient-to-br from-[#82FBD0]/10 to-[#FBF197]/14 text-[#82FBD0]  transition-all duration-300 text-sm  "
                   >
                     {emailCopied ? "Copied!" : card.linkText}
                     <svg
@@ -356,7 +341,7 @@ function Section5() {
                     href={card.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center text-[#82FBD0] group-hover:translate-x-2 transition-all duration-300 text-sm font-medium hover:text-[#F8FF7C]"
+                    className="inline-flex items-center px-3 py-2 rounded-lg bg-gradient-to-br from-[#82FBD0]/10 to-[#FBF197]/14 text-[#82FBD0]  transition-all duration-300 text-sm  "
                   >
                     {card.linkText}
                     <svg
@@ -375,12 +360,6 @@ function Section5() {
                   </a>
                 )}
               </div>
-
-              {/* Glow effect on hover */}
-              <div
-                className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{ boxShadow: `0 0 30px ${card.color}30` }}
-              ></div>
             </div>
           ))}
         </div>

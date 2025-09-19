@@ -217,7 +217,7 @@ export default function AnimatedButton({
       case "sm":
         return "px-5 py-2.5 text-base";
       case "md":
-        return "px-8 py-4 text-lg";
+        return "px-6 py-3 text-lg";
       case "lg":
         return "px-10 py-5 text-xl";
       default:
@@ -226,14 +226,34 @@ export default function AnimatedButton({
   };
 
   const baseStyles =
-    "w-full sm:w-auto inline-flex items-center justify-center gap-1 rounded-full border border-[#fff282] bg-transparent text-white transition-all duration-300 ease-out";
+    "w-50 inline-flex items-center justify-center gap-1 rounded-full border border-[#fff282] bg-transparent text-white transition-all duration-300 ease-out";
   const combinedStyles = `bg-transparent ${baseStyles} ${getVariantStyles()} ${getSizeStyles()} ${className}`;
 
   if (href) {
+    const isHashLink = typeof href === "string" && href.startsWith("#");
+    const isExternalLink =
+      (typeof href === "string" && /^(https?:)?\/\//.test(href)) ||
+      (typeof href === "string" && href.startsWith("mailto:"));
+
     return (
       <Link
         ref={buttonRef as React.RefObject<HTMLAnchorElement>}
         href={href}
+        target={isExternalLink ? "_blank" : undefined}
+        rel={isExternalLink ? "noopener noreferrer" : undefined}
+        onClick={(e) => {
+          if (isHashLink && typeof href === "string") {
+            e.preventDefault();
+            const targetElement = document.querySelector(href);
+            if (targetElement) {
+              (targetElement as HTMLElement).scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            }
+          }
+          if (onClick) onClick();
+        }}
         className={combinedStyles}
       >
         <span>{children}</span>

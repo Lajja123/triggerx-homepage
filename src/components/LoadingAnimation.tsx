@@ -72,16 +72,14 @@ const LoadingAnimation = () => {
       0.5
     );
 
-    // Add floating animation to letters (parallel)
+    // Add floating animation to letters (parallel) - ending in center
     lettersRef.current.forEach((letter, index) => {
       if (letter) {
         gsap.to(letter, {
-          y: -10,
-          duration: 2,
-          ease: "power2.inOut",
-          repeat: 3, // Limited repeats instead of infinite
-          yoyo: true,
-          delay: index * 0.1,
+          y: 0, // End at center position
+          duration: 1.5,
+          ease: "power2.out",
+          delay: index * 0.1 + 1.2, // Start after initial reveal
         });
       }
     });
@@ -204,7 +202,7 @@ const LoadingAnimation = () => {
 
       {/* Letters container */}
       <div
-        className="flex items-end letters-container relative gap-2 md:gap-3 lg:gap-4 xl:gap-6"
+        className="flex items-center letters-container relative gap-2 md:gap-3 lg:gap-4 xl:gap-6"
         style={{ height: "clamp(140px, 22vw, 230px)" }}
       >
         {letters.map((letter, index) => (

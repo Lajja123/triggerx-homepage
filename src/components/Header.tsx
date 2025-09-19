@@ -22,11 +22,14 @@ export default function Header() {
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
 
   const navLinks = [
-    { href: "#", text: "Dev Hub" },
-    { href: "#", text: "Leaderboard" },
-    { href: "#", text: "Blog" },
-    { href: "#", text: "Join as Keeper" },
-    { href: "#", text: "Contact Us" },
+    { href: "https://app.triggerx.network/devhub", text: "Dev Hub" },
+    { href: "https://app.triggerx.network/leaderboard", text: "Leaderboard" },
+    // { href: "#", text: "Blog" },
+    {
+      href: "https://triggerx.gitbook.io/triggerx-docs/getting-started-as-keepers",
+      text: "Join as Keeper",
+    },
+    { href: "#contact", text: "Contact Us" },
   ];
 
   useEffect(() => {
@@ -237,26 +240,39 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav ref={navLinksRef} className="hidden lg:flex items-center gap-3">
-            {navLinks.map((link, index) => (
-              <Link
-                key={index}
-                href={link.href}
-                className="hover:text-white relative group flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 ease-out hover:bg-white/5"
-              >
-                <Typography variant="body" className="relative text-white">
-                  {link.text}
-                  <div className="hover:text-white nav-underline absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-[#82FBD0] to-[#fbf197] w-0 transition-all duration-300"></div>
-                </Typography>
-              </Link>
-            ))}
+            {navLinks.map((link, index) => {
+              const isContact = link.text === "Contact Us";
+              return (
+                <Link
+                  key={index}
+                  href={isContact ? "#contact" : link.href}
+                  target={isContact ? undefined : "_blank"}
+                  rel={isContact ? undefined : "noopener noreferrer"}
+                  onClick={(e) => {
+                    if (isContact) {
+                      e.preventDefault();
+                      document
+                        .getElementById("contact")
+                        ?.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}
+                  className="hover:text-white relative group flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 ease-out hover:bg-white/5"
+                >
+                  <Typography variant="body" className="relative text-white">
+                    {link.text}
+                    <div className="hover:text-white nav-underline absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-[#82FBD0] to-[#fbf197] w-0 transition-all duration-300"></div>
+                  </Typography>
+                </Link>
+              );
+            })}
           </nav>
         </div>
 
         <div className="flex items-center gap-4">
           <div className="hidden lg:block cta-button relative group">
             <AnimatedButton
-              href="#"
-              size="sm"
+              href="https://app.triggerx.network/"
+              size="md"
               variant="outline"
               className="relative z-10 hover:scale-105 transition-transform duration-300"
             >
@@ -303,30 +319,42 @@ export default function Header() {
         }}
       >
         <nav className="px-4 sm:px-6 py-6 space-y-4">
-          {navLinks.map((link, index) => (
-            <Link
-              key={index}
-              href={link.href}
-              onClick={handleMobileLinkClick}
-              className="block px-4 py-3 rounded-lg hover:bg-white/5 transition-all duration-300 group"
-            >
-              <Typography
-                variant="body"
-                className="text-white group-hover:text-[#FFF282] transition-colors duration-300"
+          {navLinks.map((link, index) => {
+            const isContact = link.text === "Contact Us";
+            return (
+              <Link
+                key={index}
+                href={isContact ? "#contact" : link.href}
+                onClick={(e) => {
+                  if (isContact) {
+                    e.preventDefault();
+                    document
+                      .getElementById("contact")
+                      ?.scrollIntoView({ behavior: "smooth" });
+                  }
+                  handleMobileLinkClick();
+                }}
+                target={isContact ? undefined : "_blank"}
+                rel={isContact ? undefined : "noopener noreferrer"}
+                className="block px-4 py-3 rounded-lg hover:bg-white/5 transition-all duration-300 group"
               >
-                {link.text}
-              </Typography>
-            </Link>
-          ))}
+                <Typography
+                  variant="body"
+                  className="text-white group-hover:text-[#FFF282] transition-colors duration-300"
+                >
+                  {link.text}
+                </Typography>
+              </Link>
+            );
+          })}
 
           {/* Mobile CTA Button */}
           <div className="pt-4 border-t border-white/10">
             <AnimatedButton
-              href="#"
+              href="https://app.triggerx.network/"
               size="sm"
               variant="outline"
               className="w-50 justify-center hover:scale-105 transition-transform duration-300"
-              onClick={handleMobileLinkClick}
             >
               <Button color="white">Start Building</Button>
             </AnimatedButton>

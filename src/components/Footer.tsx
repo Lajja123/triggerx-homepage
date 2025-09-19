@@ -98,7 +98,7 @@ const triggerxLetters = [
   { letter: "G", src: "/letters/g.png" },
   { letter: "E", src: "/letters/e.png" },
   { letter: "R", src: "/letters/r.png" },
-  { letter: "X", src: "/letters/Vector.png" },
+  { letter: "X", src: "/letters/x.png" },
 ];
 
 // Sticky Social Icons Component
@@ -232,7 +232,7 @@ const footerMainNavLinks = [
     text: "Status",
     isExternal: true,
   },
-  { href: "/", text: "Build", isExternal: false },
+  // { href: "/", text: "Build", isExternal: false },
   {
     href: "https://triggerx.gitbook.io/triggerx-docs",
     text: "Docs",
@@ -243,120 +243,11 @@ const footerMainNavLinks = [
 ];
 
 function Footer() {
-  const currentYear = new Date().getFullYear();
   const [hoveredIcon, setHoveredIcon] = useState<string | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const footerRef = useRef<HTMLElement>(null);
-  const socialLinksRef = useRef<HTMLDivElement>(null);
   const lettersRef = useRef<HTMLDivElement>(null);
-  const navLinksRef = useRef<HTMLDivElement>(null);
   const mainNavRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Social links animation
-      const socialLinks =
-        socialLinksRef.current?.querySelectorAll(".social-link");
-      socialLinks?.forEach((link, index) => {
-        gsap.fromTo(
-          link,
-          { opacity: 0, y: 30, scale: 0.8 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.6,
-            delay: index * 0.1,
-            ease: "back.out(1.7)",
-            scrollTrigger: {
-              trigger: link,
-              start: "top 90%",
-              end: "bottom 10%",
-              toggleActions: "play none none reverse",
-            },
-          }
-        );
-      });
-
-      // Letters animation
-      const letters = lettersRef.current?.querySelectorAll(".letter");
-      letters?.forEach((letter, index) => {
-        // Initial animation
-        gsap.fromTo(
-          letter,
-          { opacity: 0, y: 50, scale: 0.5, rotation: -180 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            rotation: 0,
-            duration: 1,
-            delay: index * 0.15,
-            ease: "back.out(1.7)",
-            scrollTrigger: {
-              trigger: letter,
-              start: "top 85%",
-              end: "bottom 15%",
-              toggleActions: "play none none reverse",
-            },
-          }
-        );
-
-        // Continuous floating animation
-        gsap.to(letter, {
-          y: -10 + Math.sin(index) * 5,
-          duration: 2 + index * 0.3,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-          delay: index * 0.1,
-        });
-
-        // Hover effect
-        letter.addEventListener("mouseenter", () => {
-          gsap.to(letter, {
-            scale: 1.2,
-            rotation: 10,
-            duration: 0.3,
-            ease: "back.out(1.7)",
-          });
-        });
-
-        letter.addEventListener("mouseleave", () => {
-          gsap.to(letter, {
-            scale: 1,
-            rotation: 0,
-            duration: 0.3,
-            ease: "power2.out",
-          });
-        });
-      });
-
-      // Navigation links animation
-      const navLinks = navLinksRef.current?.querySelectorAll(".nav-link");
-      navLinks?.forEach((link, index) => {
-        gsap.fromTo(
-          link,
-          { opacity: 0, x: -30 },
-          {
-            opacity: 1,
-            x: 0,
-            duration: 0.5,
-            delay: index * 0.1,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: link,
-              start: "top 90%",
-              end: "bottom 10%",
-              toggleActions: "play none none reverse",
-            },
-          }
-        );
-      });
-    }, footerRef);
-
-    return () => ctx.revert();
-  }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     setMousePosition({ x: e.clientX, y: e.clientY });
@@ -404,13 +295,13 @@ function Footer() {
 
       <footer
         ref={footerRef}
-        className="relative z-10 flex flex-col items-center justify-center gap-[5px] md:gap-[40px] lg:gap-[80px] 2xl:gap-[120px] mt-[80px] lg:mt-0 min-h-screen overflow-hidden"
+        className="relative z-10 flex flex-col items-center justify-center "
         onMouseMove={handleMouseMove}
       >
         {/* Animated Letters Banner */}
         <div
           ref={lettersRef}
-          className="z-20 w-full mx-auto h-max pt-5 pb-3 mt-0 sm:mt-8 md:mt-12 group"
+          className="z-20 w-full mx-auto h-max pt-5 pb-3 mb-50 group"
         >
           <div className="flex items-center justify-between w-full px-4 md:px-8 lg:px-12 xl:px-16">
             {triggerxLetters.map((letterData, index) => (
@@ -423,7 +314,7 @@ function Footer() {
                   alt={letterData.letter}
                   width={100}
                   height={100}
-                  className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 xl:w-40 xl:h-40 object-center transition-all duration-300 group-hover:drop-shadow(0 0 20px rgba(130, 251, 208, 0.6))"
+                  className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 xl:w-50 xl:h-50 object-center transition-all duration-300 group-hover:drop-shadow(0 0 20px rgba(130, 251, 208, 0.6))"
                 />
 
                 {/* Glow effect on hover */}
