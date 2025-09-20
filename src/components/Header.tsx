@@ -251,9 +251,14 @@ export default function Header() {
                   onClick={(e) => {
                     if (isContact) {
                       e.preventDefault();
-                      document
-                        .getElementById("contact")
-                        ?.scrollIntoView({ behavior: "smooth" });
+                      const element = document.getElementById("contact");
+                      if (element) {
+                        const elementPosition = element.offsetTop - 50;
+                        window.scrollTo({
+                          top: elementPosition,
+                          behavior: "smooth",
+                        });
+                      }
                     }
                   }}
                   className="hover:text-white relative group flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 ease-out hover:bg-white/5"
@@ -312,7 +317,7 @@ export default function Header() {
       {/* Mobile Navigation Menu */}
       <div
         ref={mobileNavRef}
-        className="lg:hidden fixed left-0 right-0 bg-[#141414]border-b bg-[#0a0a0a] border-white/10 z-[90]"
+        className="lg:hidden fixed left-0 right-0 border-b bg-[#0a0a0a] border-white/10 z-[90]"
         style={{
           display: "none",
           top: `${headerRef.current?.offsetHeight || 80}px`,
@@ -328,9 +333,14 @@ export default function Header() {
                 onClick={(e) => {
                   if (isContact) {
                     e.preventDefault();
-                    document
-                      .getElementById("contact")
-                      ?.scrollIntoView({ behavior: "smooth" });
+                    const element = document.getElementById("contact");
+                    if (element) {
+                      const elementPosition = element.offsetTop - 50;
+                      window.scrollTo({
+                        top: elementPosition,
+                        behavior: "smooth",
+                      });
+                    }
                   }
                   handleMobileLinkClick();
                 }}

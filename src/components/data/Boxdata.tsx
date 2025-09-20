@@ -1,6 +1,16 @@
+// Import SVG files
+import svg1 from "../../assets/why svg and gifs/1 (1).svg";
+import svg2 from "../../assets/why svg and gifs/2 (2).svg";
+import svg3 from "../../assets/why svg and gifs/3 (4).svg";
+import svg4 from "../../assets/why svg and gifs/4 (3).svg";
+import svg5 from "../../assets/why svg and gifs/5.svg";
+import svg6 from "../../assets/why svg and gifs/6.svg";
+import svg7 from "../../assets/why svg and gifs/7.svg";
+
 const Boxdata = [
   {
     imageSrc: "/videos/superchain.webm",
+    svgSrc: svg1,
     title: "Automation Across the L2s",
     mediaType: "video",
     description:
@@ -8,6 +18,7 @@ const Boxdata = [
   },
   {
     imageSrc: "/videos/own.webm",
+    svgSrc: svg2,
     title: "Own your Automation",
     mediaType: "video",
     description:
@@ -15,6 +26,7 @@ const Boxdata = [
   },
   {
     imageSrc: "/videos/Ironclad.webm",
+    svgSrc: svg3,
     title: "Ironclad Security",
     mediaType: "video",
     description:
@@ -23,6 +35,7 @@ const Boxdata = [
 
   {
     imageSrc: "/videos/keeper.webm",
+    svgSrc: svg4,
     title: "Decentralized Keeper Network",
     mediaType: "video",
     description:
@@ -30,6 +43,7 @@ const Boxdata = [
   },
   {
     imageSrc: "/videos/grow.webm",
+    svgSrc: svg5,
     title: "Built to Grow With You",
     mediaType: "video",
     description:
@@ -37,6 +51,7 @@ const Boxdata = [
   },
   {
     imageSrc: "/videos/aggregate.webm",
+    svgSrc: svg6,
     title: "Aggregate with BLS",
     mediaType: "video",
     description:
@@ -44,6 +59,7 @@ const Boxdata = [
   },
   {
     imageSrc: "/videos/visibility.webm",
+    svgSrc: svg7,
     title: "Total Control, Total Visibility",
     mediaType: "video",
     description:

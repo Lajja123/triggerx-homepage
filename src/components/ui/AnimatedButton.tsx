@@ -246,9 +246,11 @@ export default function AnimatedButton({
             e.preventDefault();
             const targetElement = document.querySelector(href);
             if (targetElement) {
-              (targetElement as HTMLElement).scrollIntoView({
+              const elementPosition =
+                (targetElement as HTMLElement).offsetTop - 50;
+              window.scrollTo({
+                top: elementPosition,
                 behavior: "smooth",
-                block: "start",
               });
             }
           }

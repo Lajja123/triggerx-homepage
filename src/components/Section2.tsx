@@ -208,7 +208,7 @@ export default function Section2() {
         {/* Main title section */}
         <div ref={titleRef} className="text-center mb-16 sm:mb-20 lg:mb-24">
           <div className="relative inline-block">
-            <H1 className="mb-6 sm:mb-8 flex items-center justify-center gap-3 sm:gap-4 lg:gap-6 flex-wrap">
+            <H1 className="mb-6 sm:mb-8 flex items-center justify-center gap-1 sm:gap-2 lg:gap-3 flex-wrap">
               <span className="relative">
                 <span className="relative z-10  text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold">
                   Trigger
@@ -315,10 +315,16 @@ export default function Section2() {
                         <div className="pointer-events-none absolute -bottom-10 -right-10 w-56 h-56 rounded-full bg-[var(--brand-a)]/15 blur-3xl" />
                         {/* Inner gradient veil */}
                         <div className="absolute inset-0 " />
-                        {/* Center index as watermark */}
+                        {/* SVG Icon */}
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="text-4xl sm:text-6xl lg:text-8xl opacity-20 tracking-tighter">
-                            {index + 1}
+                          <div className="relative w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 opacity-90 group-hover:opacity-100 transition-opacity duration-300">
+                            <Image
+                              src={item.svgSrc}
+                              alt={item.title}
+                              width={160}
+                              height={160}
+                              className="w-full h-full object-contain filter drop-shadow-lg"
+                            />
                           </div>
                         </div>
                         {/* Subtle moving light */}

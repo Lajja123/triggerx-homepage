@@ -347,7 +347,7 @@ function Footer() {
               >
                 {link.text}
                 {/* Animated underline with gradient */}
-                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-[#C07AF6] to-[#FFF282] transition-all duration-300 group-hover:w-full"></div>
+                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-[#82FBD0] to-[#fbf197] transition-all duration-300 group-hover:w-full"></div>
 
                 {/* External link indicator */}
                 {link.isExternal && (

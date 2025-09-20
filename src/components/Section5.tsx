@@ -319,7 +319,7 @@ function Section5() {
                 {card.id === 1 ? (
                   <button
                     onClick={() => copyEmail(card.link.replace("mailto:", ""))}
-                    className="inline-flex items-center px-3 py-2 rounded-lg bg-gradient-to-br from-[#82FBD0]/10 to-[#FBF197]/14 text-[#82FBD0]  transition-all duration-300 text-sm  "
+                    className="inline-flex items-center px-3 py-3 rounded-lg bg-gradient-to-br from-[#82FBD0]/10 to-[#FBF197]/14 text-[#82FBD0]  transition-all duration-300 text-sm  "
                   >
                     {emailCopied ? "Copied!" : card.linkText}
                     <svg
@@ -341,7 +341,7 @@ function Section5() {
                     href={card.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-3 py-2 rounded-lg bg-gradient-to-br from-[#82FBD0]/10 to-[#FBF197]/14 text-[#82FBD0]  transition-all duration-300 text-sm  "
+                    className="inline-flex items-center px-3 py-3 rounded-lg bg-gradient-to-br from-[#82FBD0]/10 to-[#FBF197]/14 text-[#82FBD0]  transition-all duration-300 text-sm  "
                   >
                     {card.linkText}
                     <svg

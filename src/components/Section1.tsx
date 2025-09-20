@@ -325,7 +325,7 @@ export default function Section1() {
             onMouseLeave={() => handleButtonMouseLeave(button2Ref)}
           >
             <AnimatedButton
-              href="#"
+              href="#contact"
               variant="outline"
               className="w-50  md:px-6 md:py-3 md:text-lg px-5 py-2.5 text-base"
             >

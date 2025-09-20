@@ -1,10 +1,29 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import ContextProvider from "@/context";
 
 export const metadata: Metadata = {
   title: "TriggerX - Homepage",
-  description: "TriggerX homepage with modern typography and responsive design",
+  description: "Automate Tasks Effortlessly",
+
+  openGraph: {
+    title: "TriggerX - Homepage",
+    description: "Automate Tasks Effortlessly",
+    url: `https://triggerx-homepage.vercel.app/`,
+    siteName: "TriggerX - Homepage",
+    images: [
+      {
+        url: `https://triggerx-homepage.vercel.app/OGImages/triggerx.png`,
+        width: 1200,
+        height: 630,
+        alt: "TriggerX",
+        type: "image/png",
+      },
+    ],
+    type: "website",
+  },
+  alternates: {
+    canonical: `https://triggerx-homepage.vercel.app/`,
+  },
 };
 
 export default async function RootLayout({

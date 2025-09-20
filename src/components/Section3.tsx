@@ -240,7 +240,7 @@ export default function Section3() {
             <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 sm:px-6 py-8 sm:py-10">
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl leading-tight text-white tracking-tight">
                 <span className="title-line block overflow-hidden">
-                  <span className="inline-block">Why</span>
+                  <span className="inline-block">What</span>
                 </span>
                 <span className="title-line block overflow-hidden">
                   <span className="inline-block">Trigger X</span>
@@ -439,7 +439,7 @@ export default function Section3() {
                 variant="outline"
                 className="w-50  md:px-6 md:py-3 md:text-lg px-5 py-2.5 text-base"
               >
-                <Button color="white">Start Building</Button>
+                <Button color="white">Dev Hub</Button>
               </AnimatedButton>
             </div>
 
